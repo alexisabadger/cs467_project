@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import styles from './login.module.css'
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -14,24 +15,64 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>Personal Trainer</h1>
-      <br />
-      <form onSubmit={handleSignIn}>
-        <label>E-mail</label>
-        <br />
-        <input placeholder="Your e-mail here" />
-        <br />
-        <label>Password</label>
-        <br />
-        <input placeholder="Your password here" />
-        <br />
-        <br />
-        <button type="submit">Sign In</button>
-      </form>
-      <br />
-      <p>Don't have an account?</p>
-      <Link href="/pages/create-account">Create an Acount</Link>
+    <html>
+  <body>
+    <div className={styles.desktop}>
+      <div className={styles.div}>
+        <div className={styles.overlapGroup}>
+          <div className={styles.FormLogIn}>
+            <form action="/pages/dashboard" method="post"> 
+              <div className={styles.inputField}>
+                <div className={styles.label}>Email</div>
+                <div className={styles.input}>
+                  <div className={styles.textWrapper}>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      placeholder="Your email here"
+                    />
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div className={styles.inputField}>
+                <div className={styles.label}>Password</div>
+                <div className={styles.input}>
+                  <div className={styles.textWrapper}>
+                    <input
+                      type="text"
+                      id="password"
+                      name="password"
+                      required
+                      placeholder="Your password here"
+                    />
+                  </div>
+                </div>
+              </div>
+              <br />
+              <input type="submit" value="Login" /> 
+            </form>
+          </div>
+          <div className={styles.textLinkWrapper}>
+            <p className={styles.p}>
+              <span className={styles.span}>Don’t have an account? </span>
+              <span className={styles.textWrapper2}>
+                <a href="/pages/createAccount"> Create Account </a>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div className={styles.overlap}>
+          <div className={styles.textWrapper3}>
+            Cross-Platform Personal Trainer Webapp
+          </div>
+        </div>
+        <div className={styles.textWrapper4}>Log in</div>
+      </div>
     </div>
+  </body>
+</html>
   );
 }
