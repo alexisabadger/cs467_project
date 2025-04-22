@@ -8,17 +8,21 @@ export default function CreateAccount() {
         <label>First Name</label>
         <br />
         <input />
+        <br />
         <label>Last Name</label>
         <br />
         <input />
+        <br />
         <label>E-mail</label>
         <br />
         <input />
         <br />
         <label>Password</label>
+        <br />
         <input />
         <br />
         <label>Confirm Password</label>
+        <br />
         <input />
         <br />
         <br />
