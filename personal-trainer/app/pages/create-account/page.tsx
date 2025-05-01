@@ -5,21 +5,38 @@ export default function CreateAccount() {
     <div>
       <h1>Create Account</h1>
       <form>
-        <label>First Name</label>
+        <label htmlFor="firstname">First Name:</label>
         <br />
-        <input />
-        <label>Last Name</label>
+        <input type="text" id="firstname" name="firstname" required />
         <br />
-        <input />
-        <label>E-mail</label>
         <br />
-        <input />
+
+        <label htmlFor="lastname">Last Name:</label>
         <br />
-        <label>Password</label>
-        <input />
+        <input type="text" id="lastname" name="lastname" required />
         <br />
-        <label>Confirm Password</label>
-        <input />
+        <br />
+
+        <label htmlFor="email">Email:</label>
+        <br />
+        <input type="email" id="email" name="email" required />
+        <br />
+        <br />
+
+        <label htmlFor="password">Password:</label>
+        <br />
+        <input type="password" id="password" name="password" required />
+        <br />
+        <br />
+
+        <label htmlFor="confirm-password">Confirm Password:</label>
+        <br />
+        <input
+          type="password"
+          id="confirm-password"
+          name="confirm_password"
+          required
+        />
         <br />
         <br />
         <button>Create Account</button>
