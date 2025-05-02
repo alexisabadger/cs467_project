@@ -13,6 +13,7 @@ export default function Home() {
     const password = (document.getElementById("password") as HTMLInputElement)
       .value;
 
+   
     const res = await fetch("/api/authenticate", {
       method: "POST",
       headers: {
@@ -23,9 +24,15 @@ export default function Home() {
 
     const data = await res.json();
 
+
+//const mockSuccess = true; 
+
     if (data.success) {
       // Set token here
 
+//    if (mockSuccess) {
+      const userId = data.data[0]?.UserId
+      localStorage.setItem("userId",userId)
       router.push("/pages/dashboard");
     } else {
       alert("Authentication failed: " + (data.error || "Invalid credentials"));
