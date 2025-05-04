@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState } from "react";
+'use client';
+import React, { useEffect, useState } from 'react';
 
 interface UserExercises {
   ExerciseName: string;
@@ -19,8 +19,8 @@ export default function MainContent() {
 
   useEffect(() => {
     // Ensure we are running this only on the client-side
-    if (typeof window !== "undefined") {
-      const storedUserId = localStorage.getItem("authToken");
+    if (typeof window !== 'undefined') {
+      const storedUserId = localStorage.getItem('authToken');
       setUserId(storedUserId); // Set userId only if available in localStorage
     }
   }, []);
@@ -34,7 +34,7 @@ export default function MainContent() {
         }
       })
       .catch((error) => {
-        console.error("Error fetching exercise data:", error);
+        console.error('Error fetching exercise data:', error);
       });
   }, [userId]);
 

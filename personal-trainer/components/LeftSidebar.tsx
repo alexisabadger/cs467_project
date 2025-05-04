@@ -1,7 +1,7 @@
-"use client";
-import { useState } from "react";
-import SurveyCard from "./SurveyCard";
-import Link from "next/link";
+'use client';
+import { useState } from 'react';
+import SurveyCard from './SurveyCard';
+import Link from 'next/link';
 
 export default function LeftSidebar() {
   const [showSurvey, setShowSurvey] = useState(false);
@@ -22,32 +22,32 @@ export default function LeftSidebar() {
       <button
         onClick={toggleSurvey}
         style={{
-          marginTop: "1rem",
-          padding: "0.5rem 1rem",
-          backgroundColor: "#0070f3",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          backgroundColor: '#0070f3',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
         }}
       >
-        {showSurvey ? "Hide Survey" : "Take Survey"}
+        {showSurvey ? 'Hide Survey' : 'Take Survey'}
       </button>
 
       {showSurvey && <SurveyCard />}
 
       <button
         style={{
-          marginTop: "1rem",
-          padding: "0.5rem 1rem",
-          backgroundColor: "#0070f3",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          backgroundColor: '#0070f3',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
         }}
       >
-        <Link href="/pages/modify-fitness-plan">Modify Fitness Plan</Link>
+        <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
       </button>
     </aside>
   );

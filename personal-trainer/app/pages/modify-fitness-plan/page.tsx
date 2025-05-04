@@ -1,6 +1,6 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface UserExercises {
   ExerciseId: number;
@@ -27,8 +27,8 @@ export default function FitnessPlan() {
 
   useEffect(() => {
     // Ensure we are running this only on the client-side
-    if (typeof window !== "undefined") {
-      const storedUserId = localStorage.getItem("authToken");
+    if (typeof window !== 'undefined') {
+      const storedUserId = localStorage.getItem('authToken');
       setUserId(storedUserId); // Set userId only if available in localStorage
     }
   }, []);
@@ -41,7 +41,7 @@ export default function FitnessPlan() {
         setUserExercises(data.resultSets);
       }
     } catch (error) {
-      console.error("Error fetching exercise data:", error);
+      console.error('Error fetching exercise data:', error);
     }
   };
 
@@ -55,7 +55,7 @@ export default function FitnessPlan() {
         setUserExerciseOptions(data.resultSets);
       }
     } catch (error) {
-      console.error("Error fetching exercise options data:", error);
+      console.error('Error fetching exercise options data:', error);
     }
   };
 
@@ -88,10 +88,10 @@ export default function FitnessPlan() {
   const addExercise = async (exerciseId: number) => {
     if (!userId) return;
 
-    await fetch("/api/user-exercise-options", {
-      method: "POST",
+    await fetch('/api/user-exercise-options', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ userId, exerciseId }),
     });
@@ -104,10 +104,10 @@ export default function FitnessPlan() {
   const deleteExercise = async (exerciseId: number) => {
     if (!userId) return;
 
-    await fetch("/api/user-exercise-options", {
-      method: "DELETE",
+    await fetch('/api/user-exercise-options', {
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ userId, exerciseId }),
     });
@@ -129,10 +129,10 @@ export default function FitnessPlan() {
 
     const updatedData = editableExercises[exerciseId];
     console.log(updatedData);
-    const res = await fetch("/api/user-exercise-options", {
-      method: "PUT",
+    const res = await fetch('/api/user-exercise-options', {
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         userId,
@@ -153,7 +153,7 @@ export default function FitnessPlan() {
         return updated;
       });
     } else {
-      console.error("Failed to update exercise");
+      console.error('Failed to update exercise');
     }
   };
 
@@ -161,16 +161,16 @@ export default function FitnessPlan() {
     <>
       <button
         style={{
-          marginTop: "1rem",
-          padding: "0.5rem 1rem",
-          backgroundColor: "#0070f3",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          backgroundColor: '#0070f3',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
         }}
       >
-        <Link href="/pages/dashboard">Back</Link>
+        <Link href='/pages/dashboard'>Back</Link>
       </button>
       <h1>Current Fitness Plan</h1>
       {userExercises.length > 0 ? (
@@ -200,13 +200,13 @@ export default function FitnessPlan() {
                     <button
                       onClick={() => deleteExercise(exercise.ExerciseId)}
                       style={{
-                        marginTop: "1rem",
-                        padding: "0.5rem 1rem",
-                        backgroundColor: "#0070f3",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
+                        marginTop: '1rem',
+                        padding: '0.5rem 1rem',
+                        backgroundColor: '#0070f3',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
                       }}
                     >
                       Delete Exercise
@@ -225,13 +225,13 @@ export default function FitnessPlan() {
                         )
                       }
                       style={{
-                        marginTop: "1rem",
-                        padding: "0.5rem 1rem",
-                        backgroundColor: "#0070f3",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
+                        marginTop: '1rem',
+                        padding: '0.5rem 1rem',
+                        backgroundColor: '#0070f3',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
                       }}
                     >
                       Update Exercise
@@ -243,14 +243,14 @@ export default function FitnessPlan() {
                   <td>{exercise.FitnessLevel}</td>
                   <td>
                     <input
-                      type="number"
+                      type='number'
                       value={
-                        editable.ExerciseTime ?? exercise.ExerciseTime ?? ""
+                        editable.ExerciseTime ?? exercise.ExerciseTime ?? ''
                       }
                       onChange={(e) =>
                         handleInputChange(
                           exercise.ExerciseId,
-                          "ExerciseTime",
+                          'ExerciseTime',
                           +e.target.value
                         )
                       }
@@ -258,12 +258,12 @@ export default function FitnessPlan() {
                   </td>
                   <td>
                     <input
-                      type="number"
-                      value={editable.Distance ?? exercise.Distance ?? ""}
+                      type='number'
+                      value={editable.Distance ?? exercise.Distance ?? ''}
                       onChange={(e) =>
                         handleInputChange(
                           exercise.ExerciseId,
-                          "Distance",
+                          'Distance',
                           +e.target.value
                         )
                       }
@@ -271,12 +271,12 @@ export default function FitnessPlan() {
                   </td>
                   <td>
                     <input
-                      type="number"
-                      value={editable.Sets ?? exercise.Sets ?? ""}
+                      type='number'
+                      value={editable.Sets ?? exercise.Sets ?? ''}
                       onChange={(e) =>
                         handleInputChange(
                           exercise.ExerciseId,
-                          "Sets",
+                          'Sets',
                           +e.target.value
                         )
                       }
@@ -284,12 +284,12 @@ export default function FitnessPlan() {
                   </td>
                   <td>
                     <input
-                      type="number"
-                      value={editable.Reps ?? exercise.Reps ?? ""}
+                      type='number'
+                      value={editable.Reps ?? exercise.Reps ?? ''}
                       onChange={(e) =>
                         handleInputChange(
                           exercise.ExerciseId,
-                          "Reps",
+                          'Reps',
                           +e.target.value
                         )
                       }
@@ -297,12 +297,12 @@ export default function FitnessPlan() {
                   </td>
                   <td>
                     <input
-                      type="number"
-                      value={editable.Weight ?? exercise.Weight ?? ""}
+                      type='number'
+                      value={editable.Weight ?? exercise.Weight ?? ''}
                       onChange={(e) =>
                         handleInputChange(
                           exercise.ExerciseId,
-                          "Weight",
+                          'Weight',
                           +e.target.value
                         )
                       }
@@ -316,7 +316,7 @@ export default function FitnessPlan() {
       ) : (
         <p>No exercises found</p>
       )}
-      <h1 style={{ marginTop: "100px" }}>Exercise Options</h1>
+      <h1 style={{ marginTop: '100px' }}>Exercise Options</h1>
       {userExerciseOptions.length > 0 ? (
         <table>
           <thead>
@@ -340,13 +340,13 @@ export default function FitnessPlan() {
                   <button
                     onClick={() => addExercise(exercise.ExerciseId)}
                     style={{
-                      marginTop: "1rem",
-                      padding: "0.5rem 1rem",
-                      backgroundColor: "#0070f3",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
+                      marginTop: '1rem',
+                      padding: '0.5rem 1rem',
+                      backgroundColor: '#0070f3',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
                     }}
                   >
                     Add Exercise
