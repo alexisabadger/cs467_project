@@ -14,6 +14,7 @@ interface UserExercises {
 }
 
 export default function MainContent() {
+
   const [userExercises, setUserExercises] = useState<UserExercises[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -83,3 +84,4 @@ export default function MainContent() {
     </main>
   );
 }
+

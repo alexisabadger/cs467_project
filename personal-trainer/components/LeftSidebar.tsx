@@ -1,7 +1,9 @@
 'use client';
+
 import { useState } from 'react';
 import SurveyCard from './SurveyCard';
 import Link from 'next/link';
+
 
 export default function LeftSidebar() {
   const [showSurvey, setShowSurvey] = useState(false);
@@ -11,7 +13,7 @@ export default function LeftSidebar() {
   };
 
   return (
-    <aside style={{}}>
+    <aside style={{  }}>
       <h2>Fitness Survey</h2>
       <ul>
         <li>Line 1</li>
