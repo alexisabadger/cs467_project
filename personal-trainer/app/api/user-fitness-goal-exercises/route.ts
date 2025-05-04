@@ -5,12 +5,14 @@ export async function POST(req: Request) {
   try {
     const { userId, fitnessLevel, fitnessGoals } = await req.json();
 
-    fitnessGoals.map( async (goal: number) => ( 
-        await db.query(
-            "CALL UserFitnessGoalExercises(?, ?, ?)",
-            [userId, fitnessLevel, goal]
-        )
-    )); 
+    fitnessGoals.map(
+      async (goal: number) =>
+        await db.query("CALL UserFitnessGoalExercises(?, ?, ?)", [
+          userId,
+          fitnessLevel,
+          goal,
+        ])
+    );
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

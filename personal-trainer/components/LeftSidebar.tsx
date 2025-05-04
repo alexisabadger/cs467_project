@@ -1,7 +1,7 @@
 "use client";
-
 import { useState } from "react";
 import SurveyCard from "./SurveyCard";
+import Link from "next/link";
 
 export default function LeftSidebar() {
   const [showSurvey, setShowSurvey] = useState(false);
@@ -35,6 +35,20 @@ export default function LeftSidebar() {
       </button>
 
       {showSurvey && <SurveyCard />}
+
+      <button
+        style={{
+          marginTop: "1rem",
+          padding: "0.5rem 1rem",
+          backgroundColor: "#0070f3",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        <Link href="/pages/modify-fitness-plan">Modify Fitness Plan</Link>
+      </button>
     </aside>
   );
 }
