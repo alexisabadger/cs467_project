@@ -1,9 +1,11 @@
+"use client";
 import { useState } from "react";
 
 export default function SurveyCard() {
   const [fitnessLevel, setFitnessLevel] = useState("");
   const [fitnessGoals, setFitnessGoals] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const userId = localStorage.getItem('authToken');
 
   const handleCheckboxChange = (goal: string) => {
     setFitnessGoals((prevGoals) =>
@@ -13,7 +15,7 @@ export default function SurveyCard() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!fitnessLevel) {
@@ -21,11 +23,22 @@ export default function SurveyCard() {
       return;
     }
 
-    console.log("Fitness Level:", fitnessLevel);
-    console.log("Fitness Goals:", fitnessGoals);
+    // console.log("Fitness Level:", fitnessLevel);
+    // console.log("Fitness Goals:", fitnessGoals);
     setSubmitted(true);
 
-    // backend needed
+    const res = await fetch("/api/user-fitness-goal-exercises", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, fitnessLevel, fitnessGoals }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("Created fitness plan.");
+    }
   };
 
   return (
@@ -45,7 +58,7 @@ export default function SurveyCard() {
             <p>
               <strong>What is your level of fitness? (select one)</strong>
             </p>
-            {["Beginner", "Intermediate", "Advanced"].map((level) => (
+            {["Beginner", "Intermediate", "Advanced"].map((level, index) => (
               <label
                 key={level}
                 style={{ display: "block", marginBottom: "0.25rem" }}
@@ -53,9 +66,9 @@ export default function SurveyCard() {
                 <input
                   type="radio"
                   name="fitnessLevel"
-                  value={level}
-                  checked={fitnessLevel === level}
-                  onChange={() => setFitnessLevel(level)}
+                  value={index}
+                  checked={fitnessLevel === String(index)}
+                  onChange={() => setFitnessLevel(String(index))}
                 />{" "}
                 {level}
               </label>
@@ -68,16 +81,16 @@ export default function SurveyCard() {
               <strong>What are your fitness goals? (select one or more)</strong>
             </p>
             {["Strength", "Weight-loss", "Flexibility", "Mindfulness"].map(
-              (goal) => (
+              (goal, index) => (
                 <label
                   key={goal}
                   style={{ display: "block", marginBottom: "0.25rem" }}
                 >
                   <input
                     type="checkbox"
-                    value={goal}
-                    checked={fitnessGoals.includes(goal)}
-                    onChange={() => handleCheckboxChange(goal)}
+                    value={index}
+                    checked={fitnessGoals.includes(String(index))}
+                    onChange={() => handleCheckboxChange(String(index))}
                   />{" "}
                   {goal}
                 </label>

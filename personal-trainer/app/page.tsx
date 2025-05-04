@@ -25,6 +25,7 @@ export default function Home() {
 
     if (data.success) {
       // Set token here
+      localStorage.setItem('authToken', data.data[0].UserId);
 
       router.push("/pages/dashboard");
     } else {
