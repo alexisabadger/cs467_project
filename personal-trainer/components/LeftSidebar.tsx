@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import SurveyCard from './SurveyCard';
 import Link from 'next/link';
+import styles from '@/components/Dashboard.module.css';
 
 
 export default function LeftSidebar() {
@@ -23,32 +24,14 @@ export default function LeftSidebar() {
 
       <button
         onClick={toggleSurvey}
-        style={{
-          marginTop: '1rem',
-          padding: '0.5rem 1rem',
-          backgroundColor: '#0070f3',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
+        className={styles.button}
       >
         {showSurvey ? 'Hide Survey' : 'Take Survey'}
       </button>
 
       {showSurvey && <SurveyCard />}
 
-      <button
-        style={{
-          marginTop: '1rem',
-          padding: '0.5rem 1rem',
-          backgroundColor: '#0070f3',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
+      <button className={styles.button}>
         <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
       </button>
     </aside>

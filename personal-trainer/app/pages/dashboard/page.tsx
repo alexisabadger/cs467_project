@@ -1,23 +1,29 @@
-import LeftSidebar from '@/components/LeftSidebar';
-import MainContent from '@/components/MainContent';
-import RightSidebar from '@/components/RightSidebar';
+"use client";
 
-export default function HomePage() {
+import styles from "@/components/Dashboard.module.css";
+import Header from "@/components/Header";
+import LeftSidebar from "@/components/LeftSidebar";
+import MainContent from "@/components/MainContent";
+import RightSidebar from "@/components/RightSidebar";
+
+export default function DashboardPage() {
   return (
-    <>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 2fr 1fr',
-          gap: '1rem',
-          padding: '1rem',
-          height: '100vh',
-        }}
-      >
-        <LeftSidebar />
-        <MainContent />
-        <RightSidebar />
+    <div className={styles.dashboardContainer}>
+      <div className={styles.header}>
+        <Header />
       </div>
-    </>
+
+      <div className={styles.contentGrid}>
+        <div className={`${styles.card} ${styles.leftSidebar}`}>
+          <LeftSidebar />
+        </div>
+        <div className={`${styles.card} ${styles.mainContent}`}>
+          <MainContent />
+        </div>
+        <div className={`${styles.card} ${styles.rightSidebar}`}>
+          <RightSidebar />
+        </div>
+      </div>
+    </div>
   );
 }
