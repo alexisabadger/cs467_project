@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import styles from '@/components/Dashboard.module.css';
 
 export default function SurveyCard() {
   const [fitnessLevel, setFitnessLevel] = useState('');
@@ -42,15 +43,7 @@ export default function SurveyCard() {
   };
 
   return (
-    <div
-      style={{
-        marginTop: '1rem',
-        padding: '1rem',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-      }}
-    >
+    <div className = {styles.card}>
       {!submitted ? (
         <form onSubmit={handleSubmit}>
           {/* Fitness Level (Radio Buttons) */}
@@ -97,19 +90,7 @@ export default function SurveyCard() {
               ))}
             </div>
   
-            <button
-              type="submit"
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: '#0070f3',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-              }}
-            >
-              Submit
-            </button>
+            <button type="submit" className={styles.button}>Submit</button>
           </form>
         ) : (
           <div>
