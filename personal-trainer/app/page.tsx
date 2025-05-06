@@ -69,8 +69,13 @@ export default function Home() {
                 </div>
               </div>
               <br />
+<<<<<<< Updated upstream
               <input type='submit' value='Login' />
             </form>
+=======
+              <input type="submit" value="Login" className={styles.loginButton} />
+              </form>
+>>>>>>> Stashed changes
           </div>
           <div className={styles.textLinkWrapper}>
             <p className={styles.p}>
