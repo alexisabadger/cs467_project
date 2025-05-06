@@ -52,8 +52,8 @@ export default function Home() {
                 </div>
               </div>
               <br />
-              <input type="submit" value="Login" /> 
-            </form>
+              <button type="submit" className={styles.button}>Login</button>
+              </form>
           </div>
           <div className={styles.textLinkWrapper}>
             <p className={styles.p}>

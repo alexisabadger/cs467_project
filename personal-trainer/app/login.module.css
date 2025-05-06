@@ -12,30 +12,13 @@
     height: 1024px;
     position: relative;
   }
-.desktop .overlapGroup {
-    position: absolute;
-    width: 462px;
-    height: 522px;
-    top: 318px;
-    left: 489px;
-    border-radius: 8px;
-  }
 
 .desktop .FormLogIn {
     display: flex;
     flex-direction: column;
-    width: 462px;
-    height: 522px;
-    align-items: flex-start;
-    gap: var(--size-space-600);
+    align-items: center; 
     padding: var(--size-space-600);
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: var(--color-background-default-default);
-    border-radius: var(--size-radius-200);
-    border: 1px solid;
-    border-color: var(--color-border-default-default);
+    gap: var(--size-space-600);
   }
 
   .desktop .inputField {
@@ -63,23 +46,23 @@
   }
   
   .desktop .input {
-    display: flex;
-    min-width: 240px;
-    align-items: center;
-    padding: var(--size-space-300) var(--size-space-400) var(--size-space-300)
-      var(--size-space-400);
-    position: relative;
-    align-self: stretch;
-    width: 100%;
-    flex: 0 0 auto;
-    margin-bottom: -1.00px;
-    margin-left: -1.00px;
-    margin-right: -1.00px;
-    background-color: var(--color-background-default-default);
-    border-radius: var(--size-radius-200);
-    overflow: hidden;
-    border: 1px solid;
-    border-color: var(--color-border-default-default);
+      display: flex;
+      min-width: 240px;
+      align-items: center;
+      padding: var(--size-space-300) var(--size-space-400) var(--size-space-300) var(--size-space-400);
+      position: relative;
+      align-self: stretch;
+      width: 100%;
+      flex: 0 0 auto;
+      margin-bottom: -1.00px;
+      margin-left: -1.00px;
+      margin-right: -1.00px;
+      background-color: white; /* <- updated */
+      border-radius: var(--size-radius-200);
+      overflow: hidden;
+      border: 1px solid;
+      border-color: var(--color-border-default-default);
+    
   }
   
   .desktop .textWrapper {
@@ -105,24 +88,42 @@
     flex: 0 0 auto;
   }
 
-  .desktop .button {
-    all: unset;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--size-space-200);
-    padding: var(--size-space-300);
-    position: relative;
-    flex: 1;
-    flex-grow: 1;
-    background-color: #bdd7ee;
-    border-radius: var(--size-radius-200);
-    overflow: hidden;
-    border: 1px solid;
-    border-color: var(--color-border-brand-default);
-  }
-  
+  .FormLogIn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--size-space-600);
+  gap: var(--size-space-600);
+}
+
+.inputField {
+  width: 100%;
+  max-width: 300px;
+}
+
+.input {
+  width: 100%;
+  max-width: 300px;
+}
+
+.textWrapper input {
+  width: 100%;
+  max-width: 300px;
+}
+
+.button {
+  width: 100%;
+  max-width: 300px;
+  background-color: #bdd7ee;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-brand-default);
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #a4c8e4;
+}
   .desktop .button2 {
     all: unset;
     box-sizing: border-box;
@@ -214,6 +215,22 @@
     left: 0;
     background-color: #ffffff;
   }
+
+  .desktop .overlapGroup {
+    position: absolute;
+    width: 462px;
+    height: 522px;
+    top: 318px;
+    left: 489px;
+    border-radius: 8px;
+  
+    /* 👇 Add this */
+    border: 2px solid black;
+    background-color: white; /* Makes the form stand out inside the border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: gives it depth */
+    padding: 24px; /* Optional: space inside the border */
+  }
+  
   
   .desktop .textWrapper3 {
     position: absolute;
