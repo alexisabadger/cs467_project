@@ -43,41 +43,53 @@ export default function MainContent() {
   // useEffect(() => {
   //   console.log(userExercises);
   // }, [userExercises]);
-
+  const thStyle = {
+    border: '1px solid #ccc',
+    padding: '8px',
+    backgroundColor: '#f0f0f0',
+    textAlign: 'left',
+  };
+  
+  const tdStyle = {
+    border: '1px solid #ccc',
+    padding: '8px',
+  };
+  
   return (
     <main style={{}}>
+      
       <h1>Daily Workout Plan</h1>
       {userExercises.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Exercise Name</th>
-              <th>Exercise Description</th>
-              <th>Equipment</th>
-              <th>Fitness Level</th>
-              <th>Exercise Time (min.)</th>
-              <th>Distance (mi.)</th>
-              <th>Sets</th>
-              <th>Reps</th>
-              <th>Weight (lbs.)</th>
+        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <thead>
+          <tr>
+            <th style={thStyle}>Exercise Name</th>
+            <th style={thStyle}>Exercise Description</th>
+            <th style={thStyle}>Equipment</th>
+            <th style={thStyle}>Fitness Level</th>
+            <th style={thStyle}>Exercise Time (min.)</th>
+            <th style={thStyle}>Distance (mi.)</th>
+            <th style={thStyle}>Sets</th>
+            <th style={thStyle}>Reps</th>
+            <th style={thStyle}>Weight (lbs.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {userExercises.map((exercise, index) => (
+            <tr key={index}>
+              <td style={tdStyle}>{exercise.ExerciseName}</td>
+              <td style={tdStyle}>{exercise.ExerciseDescription}</td>
+              <td style={tdStyle}>{exercise.ExerciseEquipmentName}</td>
+              <td style={tdStyle}>{exercise.FitnessLevel}</td>
+              <td style={tdStyle}>{exercise.ExerciseTime}</td>
+              <td style={tdStyle}>{exercise.Distance}</td>
+              <td style={tdStyle}>{exercise.Sets}</td>
+              <td style={tdStyle}>{exercise.Reps}</td>
+              <td style={tdStyle}>{exercise.Weight}</td>
             </tr>
-          </thead>
-          <tbody>
-            {userExercises.map((exercise, index) => (
-              <tr key={index}>
-                <td>{exercise.ExerciseName}</td>
-                <td>{exercise.ExerciseDescription}</td>
-                <td>{exercise.ExerciseEquipmentName}</td>
-                <td>{exercise.FitnessLevel}</td>
-                <td>{exercise.ExerciseTime}</td>
-                <td>{exercise.Distance}</td>
-                <td>{exercise.Sets}</td>
-                <td>{exercise.Reps}</td>
-                <td>{exercise.Weight}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          ))}
+        </tbody>
+      </table>
       ) : (
         <p>No exercises found</p>
       )}
