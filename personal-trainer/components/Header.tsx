@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styles from '@/components/Dashboard.module.css';
+import Link from 'next/link';
 
 const Header: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -36,6 +37,8 @@ const Header: React.FC = () => {
       </div>
       <div className={styles.headerRight}>
         {username && `${username}`}
+        <br/>
+        <Link href='/'><u>Log Out</u></Link>
       </div>
     </header>
   );
