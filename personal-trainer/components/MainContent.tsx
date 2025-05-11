@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, CSSProperties } from 'react';
 
 interface UserExercises {
   ExerciseName: string;
@@ -43,14 +43,14 @@ export default function MainContent() {
   // useEffect(() => {
   //   console.log(userExercises);
   // }, [userExercises]);
-  const thStyle = {
+  const thStyle: CSSProperties = {
     border: '1px solid #ccc',
     padding: '8px',
     backgroundColor: '#f0f0f0',
     textAlign: 'left',
   };
   
-  const tdStyle = {
+  const tdStyle: CSSProperties = {
     border: '1px solid #ccc',
     padding: '8px',
   };
