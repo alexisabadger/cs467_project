@@ -1,233 +1,281 @@
-.desktop {
-    background-color: #5b9bd5;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-  }
-
-.desktop .div {
-    background-color: #5b9bd5;
-    width: 1440px;
-    height: 1024px;
-    position: relative;
-  }
-.desktop .overlapGroup {
-    position: absolute;
-    width: 462px;
-    height: 522px;
-    top: 318px;
-    left: 489px;
-    border-radius: 8px;
-    border: 2px solid black;
-    background-color: white; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    padding: 24px; 
+.gridContainer {
+  background-color: #5b9bd5;
+  display: grid;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  padding-top: 0;
+  margin-top: 0;
+  grid-template-rows: auto auto;
+  min-height: 100vh;
 }
 
-.desktop .FormLogIn {
+.gridContainer .title {
+  grid-row: 1;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  background-color: #ffffff;
+  font-family: "JejuGothic-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  box-sizing: border-box;
+  padding: 1rem 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-size: min(4rem, 5vw);
+  white-space: nowrap;
+  max-width: 100vw;
+}
+
+/* Apply wrapping earlier */
+@media screen and (max-width: 768px) {
+  .gridContainer .title {
+    font-size: min(3rem, 4vw);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .gridContainer .title {
+    font-size: min(2rem, 3.5vw);
+    white-space: normal;
+  }
+}
+
+.gridContainer .bodyGrid {
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  gap: 16px;
+  padding: 16px;
+  position: relative;
+  place-items: center;
+  width: 100%;
+}
+
+.gridContainer .loginHeader {
+  grid-row: 1;
+  font-family: "Jersey 20-Regular", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.gridContainer .body {
+  grid-row: 2;
+  width: 462px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  border-radius: 8px;
+  border: 2px solid black;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.gridContainer .FormLogIn {
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  padding: var(--size-space-600);
-  gap: var(--size-space-600);
+  align-items: center;
+  padding: var(--size-space-600, 24px);
+  gap: var(--size-space-600, 24px);
 }
 
-.desktop .loginButton {
-  padding: 12px 24px; /* Bigger inside */
-  font-size: 18px; /* Bigger text */
-  background-color: #007bff; /* Optional: make it stand out */
+.gridContainer .loginButton {
+  padding: 12px 24px;
+  font-size: 18px;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  width: 100%; /* Optional: make it full width */
+  width: 100%;
   max-width: 300px;
   margin-top: 16px;
 }
-  .desktop .inputField {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    width: 100%;
-  }
-  .desktop .input {
-    max-width: 300px; 
-    width: 100%;
-  }
-  
-  .desktop .label {
-    position: relative;
-    align-self: stretch;
-    margin-top: -1.00px;
-    font-family: var(--body-base-font-family);
-    font-weight: var(--body-base-font-weight);
-    color: var(--color-text-default-default);
-    font-size: var(--body-base-font-size);
-    letter-spacing: var(--body-base-letter-spacing);
-    line-height: var(--body-base-line-height);
-    font-style: var(--body-base-font-style);
-  }
-  
-  .desktop .input {
-    display: flex;
-    min-width: 240px;
-    align-items: center;
-    padding: var(--size-space-300) var(--size-space-400) var(--size-space-300) var(--size-space-400);
-    position: relative;
-    align-self: stretch;
-    width: 100%;
-    flex: 0 0 auto;
-    margin-bottom: -1.00px;
-    margin-left: -1.00px;
-    margin-right: -1.00px;
-    background-color: white;
-    border-radius: var(--size-radius-200);
-    overflow: hidden;
-    border: 1px solid;
-    border-color: var(--color-border-default-default);
-  }
-  
-  .desktop .textWrapper {
-    position: relative;
-    flex: 1;
-    margin-top: -0.50px;
-    font-family: var(--single-line-body-base-font-family);
-    font-weight: var(--single-line-body-base-font-weight);
-    color: var(--color-text-default-default);
-    font-size: var(--single-line-body-base-font-size);
-    letter-spacing: var(--single-line-body-base-letter-spacing);
-    line-height: var(--single-line-body-base-line-height);
-    font-style: var(--single-line-body-base-font-style);
-  }
-  
-  .desktop .buttonGroup {
-    display: flex;
-    align-items: center;
-    gap: var(--size-space-400);
-    position: relative;
-    align-self: stretch;
-    width: 100%;
-    flex: 0 0 auto;
-  }
 
-  .desktop .button {
-    all: unset; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #bdd7ee;
-    border-radius: var(--size-radius-200);
-    border: 3px solid var(--color-border-brand-default);
-    padding: var(--size-space-300);
-    cursor: pointer; /* add this */
+.gridContainer .inputField {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.gridContainer .input {
+  max-width: 300px;
+  width: 100%;
+}
+
+.gridContainer .label {
+  position: relative;
+  align-self: stretch;
+  margin-top: -1.00px;
+  font-family: var(--body-base-font-family, sans-serif);
+  font-weight: var(--body-base-font-weight, 400);
+  color: var(--color-text-default-default, #333);
+  font-size: var(--body-base-font-size, 16px);
+  letter-spacing: var(--body-base-letter-spacing, normal);
+  line-height: var(--body-base-line-height, 1.5);
+  font-style: var(--body-base-font-style, normal);
+}
+
+.gridContainer .input {
+  display: flex;
+  min-width: 240px;
+  align-items: center;
+  padding: var(--size-space-300, 8px) var(--size-space-400, 12px);
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  margin-bottom: -1.00px;
+  margin-left: -1.00px;
+  margin-right: -1.00px;
+  background-color: white;
+  border-radius: var(--size-radius-200, 4px);
+  overflow: hidden;
+  border: 1px solid;
+  border-color: var(--color-border-default-default, #ccc);
+}
+
+.gridContainer .input input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.gridContainer .textWrapper {
+  position: relative;
+  flex: 1;
+  margin-top: -0.50px;
+  font-family: var(--single-line-body-base-font-family, sans-serif);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  color: var(--color-text-default-default, #333);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  letter-spacing: var(--single-line-body-base-letter-spacing, normal);
+  line-height: var(--single-line-body-base-line-height, 1.5);
+  font-style: var(--single-line-body-base-font-style, normal);
+  width: 100%;
+}
+
+.gridContainer .buttonGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--size-space-400, 12px);
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.gridContainer .button {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #bdd7ee;
+  border-radius: var(--size-radius-200, 4px);
+  border: 3px solid var(--color-border-brand-default, #007bff);
+  padding: var(--size-space-300, 8px);
+  cursor: pointer;
+}
+
+.gridContainer .button2 {
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--single-line-body-base-font-family, sans-serif);
+  font-weight: var(--single-line-body-base-font-weight, 400);
+  color: var(--color-text-brand-default, #007bff);
+  font-size: var(--single-line-body-base-font-size, 16px);
+  letter-spacing: var(--single-line-body-base-letter-spacing, normal);
+  line-height: var(--single-line-body-base-line-height, 1.5);
+  white-space: nowrap;
+  font-style: var(--single-line-body-base-font-style, normal);
+}
+
+.gridContainer .textLinkWrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  margin-top: 16px;
+  position: relative;
+}
+
+.gridContainer .p {
+  position: relative;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--body-link-font-family, sans-serif);
+  font-weight: var(--body-link-font-weight, 400);
+  color: var(--color-text-default-default, #333);
+  font-size: var(--body-link-font-size, 14px);
+  letter-spacing: var(--body-link-letter-spacing, normal);
+  line-height: var(--body-link-line-height, 1.5);
+  white-space: nowrap;
+  font-style: var(--body-link-font-style, normal);
+}
+
+.gridContainer .span {
+  font-family: var(--body-link-font-family, sans-serif);
+  font-weight: var(--body-link-font-weight, 400);
+  color: #1e1e1e;
+  font-size: var(--body-link-font-size, 14px);
+  letter-spacing: var(--body-link-letter-spacing, normal);
+  line-height: var(--body-link-line-height, 1.5);
+  font-style: var(--body-link-font-style, normal);
+}
+
+.gridContainer .textWrapper2 {
+  text-decoration: underline;
+  font-family: var(--body-link-font-family, sans-serif);
+  font-style: var(--body-link-font-style, normal);
+  font-weight: var(--body-link-font-weight, 400);
+  letter-spacing: var(--body-link-letter-spacing, normal);
+  line-height: var(--body-link-line-height, 1.5);
+  font-size: var(--body-link-font-size, 14px);
+}
+
+.gridContainer .textWrapper2 a {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .gridContainer .body {
+    width: 90%;
+    max-width: 462px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .gridContainer .body {
+    width: 95%;
+    padding: 16px;
   }
   
-  .desktop .button2 {
-    all: unset;
-    box-sizing: border-box;
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: var(--single-line-body-base-font-family);
-    font-weight: var(--single-line-body-base-font-weight);
-    color: var(--color-text-brand-default);
-    font-size: var(--single-line-body-base-font-size);
-    letter-spacing: var(--single-line-body-base-letter-spacing);
-    line-height: var(--single-line-body-base-line-height);
-    white-space: nowrap;
-    font-style: var(--single-line-body-base-font-style);
+  .gridContainer .loginHeader {
+    font-size: 28px;
   }
   
-  .desktop .textLink {
-    display: flex;
-    align-items: flex-start;
-    position: relative;
-    align-self: stretch;
-    width: 100%;
-    flex: 0 0 auto;
+  .gridContainer .p {
+    white-space: normal;
+    text-align: center;
   }
-  
-  .desktop .textLink2 {
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: var(--body-link-font-family);
-    font-weight: var(--body-link-font-weight);
-    color: var(--color-text-default-default);
-    font-size: var(--body-link-font-size);
-    letter-spacing: var(--body-link-letter-spacing);
-    line-height: var(--body-link-line-height);
-    text-decoration: underline;
-    white-space: nowrap;
-    font-style: var(--body-link-font-style);
-  }
-  
-  .desktop .textLinkWrapper {
-    display: flex;
-    width: 414px;
-    align-items: flex-start;
-    position: absolute;
-    top: 470px;
-    left: 113px;
-  }
-  
-  .desktop .p {
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: var(--body-link-font-family);
-    font-weight: var(--body-link-font-weight);
-    color: var(--color-text-default-default);
-    font-size: var(--body-link-font-size);
-    letter-spacing: var(--body-link-letter-spacing);
-    line-height: var(--body-link-line-height);
-    white-space: nowrap;
-    font-style: var(--body-link-font-style);
-  }
-  
-  .desktop .span {
-    font-family: var(--body-link-font-family);
-    font-weight: var(--body-link-font-weight);
-    color: #1e1e1e;
-    font-size: var(--body-link-font-size);
-    letter-spacing: var(--body-link-letter-spacing);
-    line-height: var(--body-link-line-height);
-    font-style: var(--body-link-font-style);
-  }
-  
-  .desktop .textWrapper2 {
-    text-decoration: underline;
-    font-family: var(--body-link-font-family);
-    font-style: var(--body-link-font-style);
-    font-weight: var(--body-link-font-weight);
-    letter-spacing: var(--body-link-letter-spacing);
-    line-height: var(--body-link-line-height);
-    font-size: var(--body-link-font-size);
-  }
-  
-  .desktop .textWrapper3 {
-    position: absolute;
-    top: 46px;
-    left: 119px;
-    font-family: "JejuGothic-Regular", Helvetica;
-    font-weight: 400;
-    color: #000000;
-    font-size: 64px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .desktop .textWrapper4{
-    position: absolute;
-    top: 273px;
-    left: 493px;
-    font-family: "Jersey 20-Regular", Helvetica;
-    font-weight: 400;
-    color: #ffffff;
-    font-size: 32px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
+}
