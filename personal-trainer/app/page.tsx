@@ -34,9 +34,14 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.desktop}>
-      <div className={styles.div}>
-        <div className={styles.overlapGroup}>
+    <div className={styles.gridContainer}>
+      <div className={styles.title}>
+        Cross-Platform Personal Trainer Webapp
+      </div>
+
+      <div className={styles.bodyGrid}>
+        <div className={styles.loginHeader}>Log in</div>
+        <div className={styles.body}>
           <div className={styles.FormLogIn}>
             <form onSubmit={handleSignIn}>
               <div className={styles.inputField}>
@@ -59,7 +64,7 @@ export default function Home() {
                 <div className={styles.input}>
                   <div className={styles.textWrapper}>
                     <input
-                      type='text'
+                      type='password'
                       id='password'
                       name='password'
                       required
@@ -74,19 +79,13 @@ export default function Home() {
           </div>
           <div className={styles.textLinkWrapper}>
             <p className={styles.p}>
-              <span className={styles.span}>Don’t have an account? </span>
+              <span className={styles.span}>Dont have an account? </span>
               <span className={styles.textWrapper2}>
                 <Link href='/pages/create-account'>Create Account</Link>
               </span>
             </p>
           </div>
         </div>
-        <div className={styles.overlap}>
-          <div className={styles.textWrapper3}>
-            Cross-Platform Personal Trainer Webapp
-          </div>
-        </div>
-        <div className={styles.textWrapper4}>Log in</div>
       </div>
     </div>
   );
