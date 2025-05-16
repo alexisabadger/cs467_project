@@ -23,7 +23,7 @@ export async function GET(req: Request) {
       status: 200,
     });
   } catch (error: any) {
-    console.error('Authentication error:', error);
+    console.error('Error:', error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
@@ -34,13 +34,12 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const { userId, exerciseId } = await req.json();
-    console.log('User ID: ', userId, ' Exercise ID: ', exerciseId);
 
     await db.query('CALL UserExercise_Add(?, ?)', [userId, exerciseId]);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('Authentication error:', error);
+    console.error('Error:', error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
@@ -56,7 +55,7 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('Authentication error:', error);
+    console.error('Error:', error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
@@ -81,7 +80,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('Authentication error:', error);
+    console.error('Error:', error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }

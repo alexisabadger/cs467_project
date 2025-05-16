@@ -3,16 +3,9 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const { userId, fitnessLevel, fitnessGoals } = await req.json();
+    const { email, firstName, lastName, password } = await req.json();
 
-    fitnessGoals.map(
-      async (goal: number) =>
-        await db.query('CALL UserFitnessGoalExercises(?, ?, ?)', [
-          userId,
-          fitnessLevel,
-          goal,
-        ])
-    );
+    await db.query('CALL User_Save(?, ?, ?, SHA2(?, 256))', [email, firstName, lastName, password]);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

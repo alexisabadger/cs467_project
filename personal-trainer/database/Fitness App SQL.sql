@@ -449,63 +449,51 @@ END;;
 
 -- User Save Procedure
 CREATE PROCEDURE `User_Save`(
-    _UserId INT,
-    _UserName VARCHAR(50),
     _Email VARCHAR(100),
     _FirstName VARCHAR(50),
     _LastName VARCHAR(50),
-    _FitnessLevelId INT,
-    _UserTypeId INT,
-    _ValidationValue VARCHAR(128),
-    _CurrentUserId INT
+    _ValidationValue VARCHAR(128)
 )
 BEGIN
     DECLARE _NewUserId INT;
     
     START TRANSACTION;
     
-    -- If user exists, update
-    IF (_UserId > 0) THEN
-        UPDATE Users
-        SET UserName = _UserName,
-            Email = _Email,
-            FirstName = _FirstName,
-            LastName = _LastName,
-            FitnessLevelId = _FitnessLevelId,
-            UserTypeId = _UserTypeId,
-            UpdatedOn = NOW()
-        WHERE UserId = _UserId;
-        
-        SET _NewUserId = _UserId;
-        
-        -- Update validation if provided
-        IF (_ValidationValue IS NOT NULL) THEN
-            UPDATE Validation
-            SET ValidationValue = _ValidationValue,
-                UpdatedOn = NOW()
-            WHERE UserId = _UserId;
-        END IF;
-    ELSE
-        -- Insert new user
-        INSERT INTO Users (
-            UserName, Email, FirstName, LastName,
-            FitnessLevelId, UserTypeId, CreatedOn, IsActive, IsDeleted
-        )
-        VALUES (
-            _UserName, _Email, _FirstName, _LastName,
-            _FitnessLevelId, _UserTypeId, NOW(), TRUE, FALSE
-        );
-        
-        SET _NewUserId = LAST_INSERT_ID();
-        
-        -- Insert validation
-        INSERT INTO Validation (
-            UserId, ValidationValue, CreatedOn
-        )
-        VALUES (
-            _NewUserId, _ValidationValue, NOW()
-        );
-    END IF;
+	-- Insert new user
+	INSERT INTO Users
+    (
+		Email,
+        FirstName,
+        LastName,
+		CreatedOn,
+        IsActive,
+        IsDeleted
+	)
+	VALUES
+    (
+		_Email,
+        _FirstName,
+        _LastName,
+		NOW(),
+        TRUE,
+        FALSE
+	);
+	
+	SET _NewUserId = LAST_INSERT_ID();
+	
+	-- Insert validation
+	INSERT INTO Validation
+    (
+		UserId,
+        ValidationValue,
+        CreatedOn
+	)
+	VALUES
+    (
+		_NewUserId,
+        _ValidationValue,
+        NOW()
+	);
     
     COMMIT;
     
@@ -927,8 +915,7 @@ DELETE FROM Users;
 
 
 -- Create admin user
-CALL User_Save(0, 'admin', 'admin@fitnessapp.com', 'Admin', 'User', 2, 1, 
-               SHA2('admin_password', 256), 1);
+CALL User_Save('admin@fitnessapp.com', 'Admin', 'User', SHA2('admin_password', 256));
 
 
 -- Get the admin ID
@@ -936,8 +923,7 @@ SET @adminId = LAST_INSERT_ID();
 
 
 -- Create John Doe user
-CALL User_Save(0, 'johndoe', 'john@example.com', 'John', 'Doe', 1, 2, 
-               SHA2('john_password', 256), @adminId);
+CALL User_Save('john@example.com', 'John', 'Doe', SHA2('john_password', 256));
 
 
 -- Get John's ID
@@ -945,8 +931,7 @@ SET @johnId = LAST_INSERT_ID();
 
 
 -- Create Jane Smith user
-CALL User_Save(0, 'janesmith', 'jane@example.com', 'Jane', 'Smith', 0, 2, 
-               SHA2('jane_password', 256), @adminId);
+CALL User_Save('jane@example.com', 'Jane', 'Smith', SHA2('jane_password', 256));
 
 
 -- Get Jane's ID
