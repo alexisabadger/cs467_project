@@ -31,7 +31,7 @@ export default function LeftSidebar() {
       const res = await fetch(`/api/user-survey-info?userId=${userId}`);
       const data = await res.json();
       if (data.success) {
-        setFitnessLevel(fitnessLevelMap[+data.fitnessLevelId] || 'Unknown');
+        setFitnessLevel(fitnessLevelMap[data.fitnessLevelId] || 'Unknown');
       }
     };
     fetchFitnessInfo();
@@ -53,10 +53,6 @@ export default function LeftSidebar() {
       </button>
 
       {showSurvey && <SurveyCard />}
-
-      <button className={styles.button}>
-        <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
-      </button>
     </aside>
   );
 }

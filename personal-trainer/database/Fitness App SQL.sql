@@ -780,6 +780,11 @@ BEGIN
     WHERE
 		l.FitnessLevelId <= _FitnessLevelId AND
         f.FitnessGoalId = _FitnessGoalId;
+        
+	UPDATE Users
+    SET FitnessLevelId = _FitnessLevelId
+    WHERE
+		UserId = _UserId;
 END;;
 
 
@@ -893,14 +898,40 @@ CREATE PROCEDURE `UserExercise_Update`(
 BEGIN
     UPDATE UserFitnessPlans AS ufp
     SET
-		ufp.ExerciseTime = _ExerciseTime,
-		ufp.Distance = _Distance,
-		ufp.Sets = _Sets,
-		ufp.Reps = _Reps,
-		ufp.Weight = _Weight
+		ufp.ExerciseTime = NULLIF(_ExerciseTime, 0),
+		ufp.Distance = NULLIF(_Distance, 0),
+		ufp.Sets = NULLIF(_Sets, 0),
+		ufp.Reps = NULLIF(_Reps, 0),
+		ufp.Weight = NULLIF(_Weight, 0)
     WHERE
 		ufp.UserId = _UserId AND
 		ufp.ExerciseId = _ExerciseId;
+END;;
+
+
+-- Update user exercises Procedure
+CREATE PROCEDURE `User_Exercise_Get`(
+    _UserId INT,
+    _ExerciseId INT
+)
+BEGIN
+    SELECT
+		ufp.UserId,
+		ufp.ExerciseId,
+		e.ExerciseEquipmentId,
+		e.FitnessLevelId,
+		e.Name AS ExerciseName,
+		e.Description AS ExerciseDescription,
+        ufp.ExerciseTime,
+        ufp.Distance,
+        ufp.Sets,
+        ufp.Reps,
+        ufp.Weight
+    FROM UserFitnessPlans AS ufp
+	INNER JOIN Exercises AS e ON e.ExerciseId = ufp.ExerciseId
+	WHERE
+		ufp.UserId = _UserId AND
+        ufp.ExerciseId = _ExerciseId;
 END;;
 
 

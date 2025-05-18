@@ -25,9 +25,9 @@ export async function GET(req: Request) {
           { status: 404 }
         );
       }
-      const userName: string = rows[0].UserName;
+      const user: string = rows[0];
   
-      return NextResponse.json({ success: true, user: userName });
+      return NextResponse.json({ success: true, user: user });
     } catch (error: unknown) {
       const err = error as Error;
       return NextResponse.json(

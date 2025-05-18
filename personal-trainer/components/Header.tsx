@@ -23,8 +23,8 @@ const Header: React.FC = () => {
       const data = await res.json();
 
       if (data.success) {
-        setUsername(data.user);
-      }
+        setUsername(data.user.FirstName + ' ' + data.user.LastName);
+      } 
     }
 
     fetchUser();
@@ -38,7 +38,15 @@ const Header: React.FC = () => {
       <div className={styles.headerRight}>
         {username && `${username}`}
         <br/>
-        <Link href='/'><u>Log Out</u></Link>
+        <button className={styles.button}>
+          <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
+        </button>
+        <button className={styles.button}>
+          <Link href='/pages/modify-fitness-plan'>Fitness Report</Link>
+        </button>
+        <button className={styles.button}>
+          <Link href='/'>Log Out</Link>
+        </button>
       </div>
     </header>
   );
