@@ -1,5 +1,7 @@
 'use client';
-import React, { useEffect, useState, CSSProperties } from 'react';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import styles from '@/components/Dashboard.module.css';
 
 interface UserExercises {
   ExerciseName: string;
@@ -43,49 +45,37 @@ export default function MainContent() {
   // useEffect(() => {
   //   console.log(userExercises);
   // }, [userExercises]);
-  const thStyle: CSSProperties = {
-    border: '1px solid #ccc',
-    padding: '8px',
-    backgroundColor: '#f0f0f0',
-    textAlign: 'left',
-  };
-  
-  const tdStyle: CSSProperties = {
-    border: '1px solid #ccc',
-    padding: '8px',
-  };
   
   return (
-    <main style={{}}>
-      
+    <main>
       <h1>Daily Workout Plan</h1>
       {userExercises.length > 0 ? (
-        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <table className = {styles.exerciseTable}>
         <thead>
           <tr>
-            <th style={thStyle}>Exercise Name</th>
-            <th style={thStyle}>Exercise Description</th>
-            <th style={thStyle}>Equipment</th>
-            <th style={thStyle}>Fitness Level</th>
-            <th style={thStyle}>Exercise Time (min.)</th>
-            <th style={thStyle}>Distance (mi.)</th>
-            <th style={thStyle}>Sets</th>
-            <th style={thStyle}>Reps</th>
-            <th style={thStyle}>Weight (lbs.)</th>
+            <th className={styles.th}>Exercise Name</th>
+            <th className={styles.th}>Exercise Description</th>
+            <th className={styles.th}>Equipment</th>
+            <th className={styles.th}>Fitness Level</th>
+            <th className={styles.th}>Exercise Time (min.)</th>
+            <th className={styles.th}>Distance (mi.)</th>
+            <th className={styles.th}>Sets</th>
+            <th className={styles.th}>Reps</th>
+            <th className={styles.th}>Weight (lbs.)</th>
           </tr>
         </thead>
         <tbody>
           {userExercises.map((exercise, index) => (
             <tr key={index}>
-              <td style={tdStyle}>{exercise.ExerciseName}</td>
-              <td style={tdStyle}>{exercise.ExerciseDescription}</td>
-              <td style={tdStyle}>{exercise.ExerciseEquipmentName}</td>
-              <td style={tdStyle}>{exercise.FitnessLevel}</td>
-              <td style={tdStyle}>{exercise.ExerciseTime}</td>
-              <td style={tdStyle}>{exercise.Distance}</td>
-              <td style={tdStyle}>{exercise.Sets}</td>
-              <td style={tdStyle}>{exercise.Reps}</td>
-              <td style={tdStyle}>{exercise.Weight}</td>
+              <td className={styles.td}>{exercise.ExerciseName}</td>
+              <td className={styles.td}>{exercise.ExerciseDescription}</td>
+              <td className={styles.td}>{exercise.ExerciseEquipmentName}</td>
+              <td className={styles.td}>{exercise.FitnessLevel}</td>
+              <td className={styles.td}>{exercise.ExerciseTime}</td>
+              <td className={styles.td}>{exercise.Distance}</td>
+              <td className={styles.td}>{exercise.Sets}</td>
+              <td className={styles.td}>{exercise.Reps}</td>
+              <td className={styles.td}>{exercise.Weight}</td>
             </tr>
           ))}
         </tbody>
@@ -93,6 +83,9 @@ export default function MainContent() {
       ) : (
         <p>No exercises found</p>
       )}
+      <button className={styles.button}>
+        <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
+      </button>
     </main>
   );
 }
