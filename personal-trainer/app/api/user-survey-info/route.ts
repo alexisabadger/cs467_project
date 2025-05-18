@@ -6,7 +6,7 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const userId = url.searchParams.get("userId");
 
-    if (userId === 'null' || userId === null)  {
+    if (userId === 'null' || userId === null) {
       // Return a 400 Bad Request if userId is missing or invalid
       return NextResponse.json(
         { success: false, error: 'userId is required' },
@@ -23,9 +23,9 @@ export async function GET(req: Request) {
           { status: 404 }
         );
       }
-      const userName: string = rows[0].UserName;
+      const fitnessLevelId: number = rows[0].FitnessLevelId;
   
-      return NextResponse.json({ success: true, user: userName });
+      return NextResponse.json({ success: true, fitnessLevelId });
     } catch (error: unknown) {
       const err = error as Error;
       return NextResponse.json(

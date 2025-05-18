@@ -139,13 +139,8 @@ export default function CreateAccount() {
               </span>
             </p>
           </div>
+        </div>
       </div>
-      
-      <div className={styles.overlap}>
-      </div>
-      <div className={styles.textWrapper4}>Create Account</div>
     </div>
-  </div>
-);
+  );
 }
-    

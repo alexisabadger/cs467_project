@@ -48,7 +48,25 @@
     overflow-y: auto;
     color: #000000; 
   }
-  
+
+  .exerciseTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #bdd7ee;
+  }
+
+  .th {
+    border: 1px solid #bdd7ee;
+    padding: 8px;
+    background-color: #f0f0f0;
+    text-align: left;
+  }
+
+  .td {
+    border: 1px solid #bdd7ee;
+    padding: 8px;
+  }
+
   .leftSidebar,
   .mainContent,
   .rightSidebar {
