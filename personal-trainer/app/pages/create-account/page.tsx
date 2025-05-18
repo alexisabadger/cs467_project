@@ -14,7 +14,7 @@ export default function CreateAccount() {
   const password = (form['password'] as HTMLInputElement).value;
   const confirmPassword = (form['confirm-password'] as HTMLInputElement).value;
 
-  // Password match check
+  //PW check
   if (password !== confirmPassword) {
     alert("Passwords do not match.");
     return;
@@ -31,7 +31,7 @@ export default function CreateAccount() {
 
     if (data.success) {
       alert('Account created! Redirecting to login...');
-      window.location.href = '/'; // Or use Next router
+      window.location.href = '/'; 
     } else {
       alert('Error: ' + (data.error || data.message));
     }
