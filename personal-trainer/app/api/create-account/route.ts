@@ -8,15 +8,13 @@ export async function POST(req: Request) {
       password,
       firstName,
       lastName,
-      // optionally add fields below later if needed from form
     } = await req.json();
 
-    // Constants for registration
-    const userId = null; // null or 0 for insert
-    const userName = email; // you could change this if needed
-    const fitnessLevelId = 1; // default for now
-    const userTypeId = 1; // default user type
-    const currentUserId = null; // no current user creating this (public registration)
+    const userId = null; 
+    const userName = email; 
+    const fitnessLevelId = 1; 
+    const userTypeId = 1; 
+    const currentUserId = null;
 
     const [resultSets]: any = await db.query(
       "CALL User_Save(?, ?, ?, ?, ?, ?, ?, SHA2(?, 256), ?)",
@@ -28,7 +26,7 @@ export async function POST(req: Request) {
         lastName,
         fitnessLevelId,
         userTypeId,
-        password, // will be hashed inside query
+        password, 
         currentUserId,
       ]
     );
