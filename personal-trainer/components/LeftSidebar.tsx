@@ -53,10 +53,6 @@ export default function LeftSidebar() {
       </button>
 
       {showSurvey && <SurveyCard />}
-
-      <button className={styles.button}>
-        <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
-      </button>
     </aside>
   );
 }
