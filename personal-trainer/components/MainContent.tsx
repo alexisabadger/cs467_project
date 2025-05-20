@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import styles from '@/components/Dashboard.module.css';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 interface UserExercises {
   ExerciseId: number;
   ExerciseName: string;
@@ -155,6 +157,7 @@ export default function MainContent() {
     );
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleExerciseSelect = async (
     userId: string | null,
     selectedOption: Option | null,
@@ -218,15 +221,15 @@ export default function MainContent() {
         <tbody>
           {rows.map((row, index) => (
             <tr key={index}>
-              <td className={styles.td}>{exercise.ExerciseName}</td>
-              <td className={styles.td}>{exercise.ExerciseDescription}</td>
-              <td className={styles.td}>{exercise.ExerciseEquipmentName}</td>
-              <td className={styles.td}>{exercise.FitnessLevel}</td>
-              <td className={styles.td}>{exercise.ExerciseTime}</td>
-              <td className={styles.td}>{exercise.Distance}</td>
-              <td className={styles.td}>{exercise.Sets}</td>
-              <td className={styles.td}>{exercise.Reps}</td>
-              <td className={styles.td}>{exercise.Weight}</td>
+              <td className={styles.td}>{row.exerciseName}</td>
+              <td className={styles.td}></td>
+              <td className={styles.td}></td>
+              <td className={styles.td}></td>
+              <td className={styles.td}>{row.exerciseTime}</td>
+              <td className={styles.td}>{row.distance}</td>
+              <td className={styles.td}></td>
+              <td className={styles.td}>{row.reps}</td>
+              <td className={styles.td}>{row.weight}</td>
             </tr>
           ))}
         </tbody>
