@@ -79,7 +79,7 @@ export default function Home() {
           </div>
           <div className={styles.textLinkWrapper}>
             <p className={styles.p}>
-              <span className={styles.span}>Don't have an account? </span>
+              <span className={styles.span}>Don&apos;t have an account? </span>
               <span className={styles.textWrapper2}>
                 <Link href='/pages/create-account'>Create Account</Link>
               </span>
