@@ -1,9 +1,7 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import styles from '@/components/Dashboard.module.css';
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+import React, { useEffect, useState, CSSProperties } from "react";
+import Select from "react-select";
+import styles from "@/components/Dashboard.module.css";
 
 interface UserExercises {
   ExerciseId: number;
@@ -157,7 +155,6 @@ export default function MainContent() {
     );
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleExerciseSelect = async (
     userId: string | null,
     selectedOption: Option | null,
@@ -199,46 +196,159 @@ export default function MainContent() {
   // useEffect(() => {
   //   console.log(userExercises);
   // }, [userExercises]);
-  
+  const thStyle: CSSProperties = {
+    border: "1px solid #ccc",
+    padding: "8px",
+    backgroundColor: "#f0f0f0",
+    textAlign: "left",
+  };
+
+  const tdStyle: CSSProperties = {
+    border: "1px solid #ccc",
+    padding: "8px",
+  };
+
   return (
-    <main>
-      <h1>Daily Workout Plan</h1>
+    <main style={{}}>
+      <h1>Workout Plan</h1>
       {userExercises.length > 0 ? (
-        <table className = {styles.exerciseTable}>
+        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+          <thead>
+            <tr>
+              <th style={thStyle}>Exercise Name</th>
+              <th style={thStyle}>Exercise Description</th>
+              <th style={thStyle}>Equipment</th>
+              <th style={thStyle}>Fitness Level</th>
+              <th style={thStyle}>Exercise Time (min.)</th>
+              <th style={thStyle}>Distance (mi.)</th>
+              <th style={thStyle}>Sets</th>
+              <th style={thStyle}>Reps</th>
+              <th style={thStyle}>Weight (lbs.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {userExercises.map((exercise, index) => (
+              <tr key={index}>
+                <td style={tdStyle}>{exercise.ExerciseName}</td>
+                <td style={tdStyle}>{exercise.ExerciseDescription}</td>
+                <td style={tdStyle}>{exercise.ExerciseEquipmentName}</td>
+                <td style={tdStyle}>{exercise.FitnessLevel}</td>
+                <td style={tdStyle}>{exercise.ExerciseTime}</td>
+                <td style={tdStyle}>{exercise.Distance}</td>
+                <td style={tdStyle}>{exercise.Sets}</td>
+                <td style={tdStyle}>{exercise.Reps}</td>
+                <td style={tdStyle}>{exercise.Weight}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No exercises found</p>
+      )}
+      <br />
+      <h1>Workout Tracker</h1>
+      <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>
           <tr>
-            <th className={styles.th}>Exercise Name</th>
-            <th className={styles.th}>Exercise Description</th>
-            <th className={styles.th}>Equipment</th>
-            <th className={styles.th}>Fitness Level</th>
-            <th className={styles.th}>Exercise Time (min.)</th>
-            <th className={styles.th}>Distance (mi.)</th>
-            <th className={styles.th}>Sets</th>
-            <th className={styles.th}>Reps</th>
-            <th className={styles.th}>Weight (lbs.)</th>
+            <th style={thStyle}>Actions</th>
+            <th style={thStyle}>Exercise Date</th>
+            <th style={thStyle}>Exercise Name</th>
+            <th style={thStyle}>Exercise Time (min.)</th>
+            <th style={thStyle}>Distance (mi.)</th>
+            <th style={thStyle}>Reps</th>
+            <th style={thStyle}>Weight (lbs.)</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row, index) => (
             <tr key={index}>
-              <td className={styles.td}>{row.exerciseName}</td>
-              <td className={styles.td}></td>
-              <td className={styles.td}></td>
-              <td className={styles.td}></td>
-              <td className={styles.td}>{row.exerciseTime}</td>
-              <td className={styles.td}>{row.distance}</td>
-              <td className={styles.td}></td>
-              <td className={styles.td}>{row.reps}</td>
-              <td className={styles.td}>{row.weight}</td>
+              <td style={tdStyle}>
+                <button
+                  className={styles.button}
+                  type="button"
+                  onClick={() => removeExercise(index)}
+                >
+                  Remove
+                </button>
+                <button
+                  className={styles.button}
+                  type="button"
+                  onClick={() => copyExercise(index)}
+                >
+                  Copy
+                </button>
+              </td>
+              <td style={tdStyle}>
+                <input
+                  type="date"
+                  value={row.exerciseDate}
+                  onChange={(e) =>
+                    handleInputChange(index, "exerciseDate", e.target.value)
+                  }
+                />
+              </td>
+              <td style={tdStyle}>
+                {isMounted && (
+                  <Select
+                    options={exerciseOptions}
+                    value={exerciseOptions.find(
+                      (option) => option.value === row.exerciseId
+                    )}
+                    onChange={(selectedOption) =>
+                      handleExerciseSelect(userId, selectedOption, index)
+                    }
+                  />
+                )}
+              </td>
+              <td style={tdStyle}>
+                <input
+                  type="number"
+                  value={row.exerciseTime || ""}
+                  disabled={row.disableFields?.exerciseTime}
+                  onChange={(e) =>
+                    handleInputChange(index, "exerciseTime", +e.target.value)
+                  }
+                />
+              </td>
+              <td style={tdStyle}>
+                <input
+                  type="number"
+                  value={row.distance || ""}
+                  disabled={row.disableFields?.distance}
+                  onChange={(e) =>
+                    handleInputChange(index, "distance", +e.target.value)
+                  }
+                />
+              </td>
+              <td style={tdStyle}>
+                <input
+                  type="number"
+                  value={row.reps || ""}
+                  disabled={row.disableFields?.reps}
+                  onChange={(e) =>
+                    handleInputChange(index, "reps", +e.target.value)
+                  }
+                />
+              </td>
+              <td style={tdStyle}>
+                <input
+                  type="number"
+                  value={row.weight || ""}
+                  disabled={row.disableFields?.weight}
+                  onChange={(e) =>
+                    handleInputChange(index, "weight", +e.target.value)
+                  }
+                />
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      ) : (
-        <p>No exercises found</p>
-      )}
-      <button className={styles.button}>
-        <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
+      <button className={styles.button} type="button" onClick={addExercise}>
+        Add Row
+      </button>
+      <button className={styles.button} type="button" onClick={addExercise}>
+        Submit
       </button>
     </main>
   );
