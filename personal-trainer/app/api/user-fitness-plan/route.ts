@@ -22,7 +22,7 @@ export async function GET(req: Request) {
       status: 200,
     });
   } catch (error: any) {
-    console.error('Authentication error:', error);
+    console.error('Error:', error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }

@@ -39,6 +39,7 @@ export default function SurveyCard() {
     const data = await res.json();
     if (data.success) {
       alert('Created fitness plan.');
+      window.location.reload();
     }
   };
 

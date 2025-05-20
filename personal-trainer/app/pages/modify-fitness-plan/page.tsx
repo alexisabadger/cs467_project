@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, CSSProperties } from 'react';
 import Link from 'next/link';
 
 interface UserExercises {
@@ -157,6 +157,18 @@ export default function FitnessPlan() {
     }
   };
 
+    const thStyle: CSSProperties = {
+      border: '1px solid #ccc',
+      padding: '8px',
+      backgroundColor: '#f0f0f0',
+      textAlign: 'left',
+    };
+    
+    const tdStyle: CSSProperties = {
+      border: '1px solid #ccc',
+      padding: '8px',
+    };
+
   return (
     <>
       <button
@@ -174,20 +186,20 @@ export default function FitnessPlan() {
       </button>
       <h1>Current Fitness Plan</h1>
       {userExercises.length > 0 ? (
-        <table>
+        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead>
             <tr>
-              <th></th>
-              <th></th>
-              <th>Exercise Name</th>
-              <th>Exercise Description</th>
-              <th>Equipment</th>
-              <th>Fitness Level</th>
-              <th>Exercise Time (min.)</th>
-              <th>Distance (mi.)</th>
-              <th>Sets</th>
-              <th>Reps</th>
-              <th>Weight (lbs.)</th>
+              <th style={thStyle}></th>
+              <th style={thStyle}></th>
+              <th style={thStyle}>Exercise Name</th>
+              <th style={thStyle}>Exercise Description</th>
+              <th style={thStyle}>Equipment</th>
+              <th style={thStyle}>Fitness Level</th>
+              <th style={thStyle}>Exercise Time (min.)</th>
+              <th style={thStyle}>Distance (mi.)</th>
+              <th style={thStyle}>Sets</th>
+              <th style={thStyle}>Reps</th>
+              <th style={thStyle}>Weight (lbs.)</th>
             </tr>
           </thead>
           <tbody>
@@ -196,7 +208,7 @@ export default function FitnessPlan() {
 
               return (
                 <tr key={index}>
-                  <td>
+                  <td style={tdStyle}>
                     <button
                       onClick={() => deleteExercise(exercise.ExerciseId)}
                       style={{
@@ -212,7 +224,7 @@ export default function FitnessPlan() {
                       Delete Exercise
                     </button>
                   </td>
-                  <td>
+                  <td style={tdStyle}>
                     <button
                       onClick={() =>
                         updateExercise(
@@ -237,11 +249,11 @@ export default function FitnessPlan() {
                       Update Exercise
                     </button>
                   </td>
-                  <td>{exercise.ExerciseName}</td>
-                  <td>{exercise.ExerciseDescription}</td>
-                  <td>{exercise.ExerciseEquipmentName}</td>
-                  <td>{exercise.FitnessLevel}</td>
-                  <td>
+                  <td style={tdStyle}>{exercise.ExerciseName}</td>
+                  <td style={tdStyle}>{exercise.ExerciseDescription}</td>
+                  <td style={tdStyle}>{exercise.ExerciseEquipmentName}</td>
+                  <td style={tdStyle}>{exercise.FitnessLevel}</td>
+                  <td style={tdStyle}>
                     <input
                       type='number'
                       value={
@@ -256,7 +268,7 @@ export default function FitnessPlan() {
                       }
                     />
                   </td>
-                  <td>
+                  <td style={tdStyle}>
                     <input
                       type='number'
                       value={editable.Distance ?? exercise.Distance ?? ''}
@@ -269,7 +281,7 @@ export default function FitnessPlan() {
                       }
                     />
                   </td>
-                  <td>
+                  <td style={tdStyle}>
                     <input
                       type='number'
                       value={editable.Sets ?? exercise.Sets ?? ''}
@@ -282,7 +294,7 @@ export default function FitnessPlan() {
                       }
                     />
                   </td>
-                  <td>
+                  <td style={tdStyle}>
                     <input
                       type='number'
                       value={editable.Reps ?? exercise.Reps ?? ''}
@@ -295,7 +307,7 @@ export default function FitnessPlan() {
                       }
                     />
                   </td>
-                  <td>
+                  <td style={tdStyle}>
                     <input
                       type='number'
                       value={editable.Weight ?? exercise.Weight ?? ''}
@@ -321,22 +333,22 @@ export default function FitnessPlan() {
         <table>
           <thead>
             <tr>
-              <th></th>
-              <th>Exercise Name</th>
-              <th>Exercise Description</th>
-              <th>Equipment</th>
-              <th>Fitness Level</th>
-              <th>Exercise Time (min.)</th>
-              <th>Distance (mi.)</th>
-              <th>Sets</th>
-              <th>Reps</th>
-              <th>Weight (lbs.)</th>
+              <th style={thStyle}></th>
+              <th style={thStyle}>Exercise Name</th>
+              <th style={thStyle}>Exercise Description</th>
+              <th style={thStyle}>Equipment</th>
+              <th style={thStyle}>Fitness Level</th>
+              <th style={thStyle}>Exercise Time (min.)</th>
+              <th style={thStyle}>Distance (mi.)</th>
+              <th style={thStyle}>Sets</th>
+              <th style={thStyle}>Reps</th>
+              <th style={thStyle}>Weight (lbs.)</th>
             </tr>
           </thead>
           <tbody>
             {userExerciseOptions.map((exercise, index) => (
               <tr key={index}>
-                <td>
+                <td style={tdStyle}>
                   <button
                     onClick={() => addExercise(exercise.ExerciseId)}
                     style={{
@@ -352,15 +364,15 @@ export default function FitnessPlan() {
                     Add Exercise
                   </button>
                 </td>
-                <td>{exercise.ExerciseName}</td>
-                <td>{exercise.ExerciseDescription}</td>
-                <td>{exercise.ExerciseEquipmentName}</td>
-                <td>{exercise.FitnessLevel}</td>
-                <td>{exercise.ExerciseTime}</td>
-                <td>{exercise.Distance}</td>
-                <td>{exercise.Sets}</td>
-                <td>{exercise.Reps}</td>
-                <td>{exercise.Weight}</td>
+                <td style={tdStyle}>{exercise.ExerciseName}</td>
+                <td style={tdStyle}>{exercise.ExerciseDescription}</td>
+                <td style={tdStyle}>{exercise.ExerciseEquipmentName}</td>
+                <td style={tdStyle}>{exercise.FitnessLevel}</td>
+                <td style={tdStyle}>{exercise.ExerciseTime}</td>
+                <td style={tdStyle}>{exercise.Distance}</td>
+                <td style={tdStyle}>{exercise.Sets}</td>
+                <td style={tdStyle}>{exercise.Reps}</td>
+                <td style={tdStyle}>{exercise.Weight}</td>
               </tr>
             ))}
           </tbody>
