@@ -1,7 +1,8 @@
+import styles from '@/components/Dashboard.module.css';
 
 export default function RightSidebar() {
     return (
-      <aside style={{ }}>
+      <aside className={`${styles.card} ${styles.rightSidebar}`}>
         <h2>Fitness Plan Tracker</h2>
         <ul>
           <li>Line 1</li>
