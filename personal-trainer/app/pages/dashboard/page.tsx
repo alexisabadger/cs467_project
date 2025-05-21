@@ -20,9 +20,10 @@ export default function DashboardPage() {
         <div className={`${styles.card} ${styles.mainContent}`}>
           <MainContent />
         </div>
-        <div className={`${styles.card} ${styles.rightSidebar}`}>
-          <RightSidebar />
-        </div>
+        {/* right side bar removal*/}
+        {/*<div className={`${styles.card} ${styles.rightSidebar}`}>
+          <RightSidebar /> 
+        </div>*/}
       </div>
     </div>
   );

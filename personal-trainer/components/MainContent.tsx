@@ -325,11 +325,20 @@ export default function MainContent() {
                       }
                       classNamePrefix="react-select"
                       styles={{
+                         container: (base) => ({
+                          ...base,
+                          minWidth: '200px', // or wider
+                          width: '100%',     // full width of the td
+                        }),
                         control: (base) => ({
                           ...base,
                           minHeight: '40px',
                           fontSize: '14px'
-                        })
+                        }),
+                         menu: (base) => ({
+                          ...base,
+                          zIndex: 9999, // ensure it isn't clipped
+                        }),
                       }}
                     />
                   )}
