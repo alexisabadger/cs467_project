@@ -49,6 +49,11 @@
     color: #000000; 
   }
 
+  .contentMain{
+  background-color: #ffffff;
+  color: #000000;
+}
+
   .exerciseTable {
     border-collapse: collapse;
     width: 100%;
@@ -65,6 +70,8 @@
   .td {
     border: 1px solid #bdd7ee;
     padding: 8px;
+    background-color: #ffffff;
+    color: #000000; 
   }
 
   .leftSidebar,
@@ -72,6 +79,7 @@
   .rightSidebar {
     font-family: var(--single-line-body-base-font-family);
     font-size: var(--single-line-body-base-font-size);
+    background-color: #ffffff;
     color: #000000; 
   }
 

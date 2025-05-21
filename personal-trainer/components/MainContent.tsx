@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, CSSProperties } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import styles from "@/components/Dashboard.module.css";
 
@@ -29,100 +29,24 @@ interface ExerciseTracker {
     distance: boolean;
     reps: boolean;
     weight: boolean;
-  };
-}
-
-// Define the Option type
-interface Option {
-  value: number;
-  label: string;
+  }
+  status: 'start' | 'stop' | 'complete';
+  startTime: number | null;
+  elapsedSeconds: number;
 }
 
 export default function MainContent() {
   const [userExercises, setUserExercises] = useState<UserExercises[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
-  const [exerciseOptions, setExerciseOptions] = useState<Option[]>([]);
-
-  const [isMounted, setIsMounted] = useState(false); // Track if the component is mounted
+  const [rows, setRows] = useState<ExerciseTracker[]>([]);
 
   const today: string = new Date().toISOString().substring(0, 10);
-
-  // Initialize the table data (an array of rows)
-  const [rows, setRows] = useState<ExerciseTracker[]>([
-    {
-      exerciseId: null,
-      exerciseDate: today,
-      exerciseName: null,
-      exerciseTime: null,
-      distance: null,
-      reps: null,
-      weight: null,
-      disableFields: {
-        exerciseTime: false,
-        distance: false,
-        reps: false,
-        weight: false,
-      },
-    },
-  ]);
-
-  // Function to add a new row to the table
-  const addExercise = () => {
-    setRows([
-      ...rows,
-      {
-        exerciseId: null,
-        exerciseDate: today,
-        exerciseName: null,
-        exerciseTime: null,
-        distance: null,
-        reps: null,
-        weight: null,
-        disableFields: {
-          exerciseTime: false,
-          distance: false,
-          reps: false,
-          weight: false,
-        },
-      },
-    ]);
-  };
-
-  // Function to remove a specific row from the table
-  const removeExercise = (index: number) => {
-    setRows((prevRows) =>
-      prevRows.filter((row, prevIndex) => prevIndex !== index)
-    );
-  };
-
-  const copyExercise = (index: number) => {
-    const newRow = rows[index];
-    setRows([
-      ...rows,
-      {
-        exerciseId: newRow.exerciseId,
-        exerciseDate: newRow.exerciseDate,
-        exerciseName: newRow.exerciseName,
-        exerciseTime: newRow.exerciseTime,
-        distance: newRow.distance,
-        reps: newRow.reps,
-        weight: newRow.weight,
-        disableFields: {
-          exerciseTime: newRow.disableFields.exerciseTime,
-          distance: newRow.disableFields.distance,
-          reps: newRow.disableFields.reps,
-          weight: newRow.disableFields.weight,
-        },
-      },
-    ]);
-  };
 
   useEffect(() => {
     // Ensure we are running this only on the client-side
     if (typeof window !== "undefined") {
       const storedUserId = localStorage.getItem("authToken");
       setUserId(storedUserId); // Set userId only if available in localStorage
-      setIsMounted(true); // Set mounted state to true after the component is mounted
     }
   }, []);
 
@@ -130,226 +54,178 @@ export default function MainContent() {
     fetch(`/api/user-fitness-plan?userId=${userId}`)
       .then((response) => response.json())
       .then((data) => {
-        if (userId && Array.isArray(data.resultSets)) {
+        if (Array.isArray(data.resultSets)) {
           setUserExercises(data.resultSets);
-
-          const options = [
-            ...data.resultSets.map((record: UserExercises) => ({
-              value: record.ExerciseId,
-              label: record.ExerciseName,
-            })),
-          ];
-          setExerciseOptions(options);
         }
       })
       .catch((error) => {
-        console.error("Error fetching exercise data:", error);
+        console.error('Error fetching exercise data:', error);
       });
   }, [userId]);
 
-  const handleInputChange = (index: number, field: string, value: any) => {
-    setRows((prevRows) =>
-      prevRows.map((row, prevIndex) =>
-        prevIndex === index ? { ...row, [field]: value } : row
-      )
-    );
-  };
-
-  const handleExerciseSelect = async (
-    userId: string | null,
-    selectedOption: Option | null,
-    index: number
-  ) => {
-    const selectedExerciseId = selectedOption?.value;
-
-    if (selectedExerciseId) {
-      const res = await fetch(
-        `/api/user-exercise?userId=${userId}&exerciseId=${selectedExerciseId}`
-      );
-      const data = await res.json();
-
+ useEffect(() => {
+    const interval = setInterval(() => {
       setRows((prevRows) =>
-        prevRows.map((row, i) =>
-          i === index
-            ? {
-                ...row,
-                exerciseId: selectedExerciseId,
-                exerciseName: selectedOption?.label,
-                exerciseTime: data.rows[0].ExerciseTime,
-                distance: data.rows[0].Distance,
-                reps: data.rows[0].Reps,
-                weight: data.rows[0].Weight,
-                disableFields: {
-                  exerciseTime: data.rows[0].ExerciseTime === null || data.rows[0].ExerciseTime === 0,
-                  distance: data.rows[0].Distance === null || data.rows[0].Distance === 0,
-                  reps: data.rows[0].Reps === null || data.rows[0].Reps === 0,
-                  weight: data.rows[0].Weight === null || data.rows[0].Weight == 0,
-                },
-              }
-            : row
-        )
+        prevRows.map((row) => {
+          if (row.status === 'stop' && row.startTime) {
+            const elapsed = Math.floor((Date.now() - row.startTime) / 1000);
+            return { ...row, elapsedSeconds: elapsed };
+          }
+          return row;
+        })
       );
-    }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const createUserExercise = async (exercise: ExerciseTracker) => {
+    await fetch('/api/user-exercise', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId,
+        exerciseId: exercise.exerciseId,
+        exerciseDate: exercise.exerciseDate,
+        startTime: new Date(exercise.startTime).toISOString(),
+        stopTime: new Date().toISOString(),
+        distance: exercise.distance,
+        reps: exercise.reps,
+        weight: exercise.weight,
+      }),
+    });
   };
 
-  // // Log the userExercises after it updates
-  // useEffect(() => {
-  //   console.log(userExercises);
-  // }, [userExercises]);
-  const thStyle: CSSProperties = {
-    border: "1px solid #ccc",
-    padding: "8px",
-    backgroundColor: "#f0f0f0",
-    textAlign: "left",
+  const toggleExerciseState = (exerciseId: number) => {
+    setRows((prevRows) => {
+      const index = prevRows.findIndex((row) => row.exerciseId === exerciseId);
+      const now = Date.now();
+
+      if (index !== -1) {
+        return prevRows.map((row, i) => {
+          if (i !== index) return row;
+
+          if (row.status === 'start') {
+            return { ...row, status: 'stop', startTime: now, elapsedSeconds: 0 };
+          } else if (row.status === 'stop') {
+            const totalTime = Math.floor((now - (row.startTime || now)) / 1000);
+            const completedRow = {
+              ...row,
+              status: 'complete',
+              startTime: null,
+              exerciseTime: totalTime,
+              elapsedSeconds: totalTime,
+            };
+            createUserExercise(completedRow);
+            return completedRow;
+          }
+
+          return row;
+        });
+      } else {
+        const exercise = userExercises.find((ex) => ex.ExerciseId === exerciseId);
+        return [
+          ...prevRows,
+          {
+            exerciseId,
+            exerciseDate: today,
+            exerciseName: exercise?.ExerciseName || '',
+            exerciseTime: null,
+            distance: exercise?.Distance ?? null,
+            reps: exercise?.Reps ?? null,
+            weight: exercise?.Weight ?? null,
+            disableFields: {
+              exerciseTime: exercise?.ExerciseTime === 0,
+              distance: exercise?.Distance === 0,
+              reps: exercise?.Reps === 0,
+              weight: exercise?.Weight === 0,
+            },
+            status: 'stop',
+            startTime: now,
+            elapsedSeconds: 0,
+          },
+        ];
+      }
+    });
   };
 
-  const tdStyle: CSSProperties = {
-    border: "1px solid #ccc",
-    padding: "8px",
-  };
+  const resetExercises = () => {
+    setRows((prevRows) =>
+      prevRows.map((row) => ({
+        ...row,
+        status: 'start',
+        startTime: null,
+        elapsedSeconds: 0,
+        exerciseTime: null
+      }))
+    );
+};
 
   return (
-    <main style={{}}>
-      <h1>Workout Plan</h1>
+    <main className={styles.contentMain}>
+      <h1>Daily Workout Plan</h1>
       {userExercises.length > 0 ? (
-        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead>
             <tr>
-              <th style={thStyle}>Exercise Name</th>
-              <th style={thStyle}>Exercise Description</th>
-              <th style={thStyle}>Equipment</th>
-              <th style={thStyle}>Fitness Level</th>
-              <th style={thStyle}>Exercise Time (min.)</th>
-              <th style={thStyle}>Distance (mi.)</th>
-              <th style={thStyle}>Sets</th>
-              <th style={thStyle}>Reps</th>
-              <th style={thStyle}>Weight (lbs.)</th>
+              <th className={styles.th}>Start/Stop</th>
+              <th className={styles.th}>Exercise Name</th>
+              <th className={styles.th}>Description</th>
+              <th className={styles.th}>Equipment</th>
+              <th className={styles.th}>Fitness Level</th>
+              <th className={styles.th}>Time (sec)</th>
+              <th className={styles.th}>Distance (mi)</th>
+              <th className={styles.th}>Sets</th>
+              <th className={styles.th}>Reps</th>
+              <th className={styles.th}>Weight (lbs)</th>
             </tr>
           </thead>
           <tbody>
-            {userExercises.map((exercise, index) => (
-              <tr key={index}>
-                <td style={tdStyle}>{exercise.ExerciseName}</td>
-                <td style={tdStyle}>{exercise.ExerciseDescription}</td>
-                <td style={tdStyle}>{exercise.ExerciseEquipmentName}</td>
-                <td style={tdStyle}>{exercise.FitnessLevel}</td>
-                <td style={tdStyle}>{exercise.ExerciseTime}</td>
-                <td style={tdStyle}>{exercise.Distance}</td>
-                <td style={tdStyle}>{exercise.Sets}</td>
-                <td style={tdStyle}>{exercise.Reps}</td>
-                <td style={tdStyle}>{exercise.Weight}</td>
-              </tr>
-            ))}
+            {userExercises.map((exercise, index) => {
+              const trackedRow = rows.find((r) => r.exerciseId === exercise.ExerciseId);
+              const status = trackedRow?.status || 'start';
+              const time = trackedRow?.elapsedSeconds ?? exercise.ExerciseTime;
+
+              return (
+                <tr key={index}>
+                  <td className={styles.td}>
+                    <button
+                      className={styles.button}
+                      onClick={() => toggleExerciseState(exercise.ExerciseId)}
+                      disabled={status === 'complete'}
+                    >
+                      {status === 'start' && 'Start'}
+                      {status === 'stop' && 'Stop'}
+                      {status === 'complete' && 'Complete'}
+                    </button>
+                  </td>
+                  <td className={styles.td}>{exercise.ExerciseName}</td>
+                  <td className={styles.td}>{exercise.ExerciseDescription}</td>
+                  <td className={styles.td}>{exercise.ExerciseEquipmentName}</td>
+                  <td className={styles.td}>{exercise.FitnessLevel}</td>
+                  <td className={styles.td}>{time ?? '-'}</td>
+                  <td className={styles.td}>{exercise.Distance}</td>
+                  <td className={styles.td}>{exercise.Sets}</td>
+                  <td className={styles.td}>{exercise.Reps}</td>
+                  <td className={styles.td}>{exercise.Weight}</td>
+                </tr>
+              );
+            })}
           </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  <button className={styles.button} onClick={resetExercises}>
+                    Reset
+                  </button>
+                </td>
+              </tr>
+            </tfoot>
         </table>
       ) : (
         <p>No exercises found</p>
       )}
-      <br />
-      <h1>Workout Tracker</h1>
-      <table style={{ borderCollapse: "collapse", width: "100%" }}>
-        <thead>
-          <tr>
-            <th style={thStyle}>Actions</th>
-            <th style={thStyle}>Exercise Date</th>
-            <th style={thStyle}>Exercise Name</th>
-            <th style={thStyle}>Exercise Time (min.)</th>
-            <th style={thStyle}>Distance (mi.)</th>
-            <th style={thStyle}>Reps</th>
-            <th style={thStyle}>Weight (lbs.)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, index) => (
-            <tr key={index}>
-              <td style={tdStyle}>
-                <button
-                  className={styles.button}
-                  type="button"
-                  onClick={() => removeExercise(index)}
-                >
-                  Remove
-                </button>
-                <button
-                  className={styles.button}
-                  type="button"
-                  onClick={() => copyExercise(index)}
-                >
-                  Copy
-                </button>
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="date"
-                  value={row.exerciseDate}
-                  onChange={(e) =>
-                    handleInputChange(index, "exerciseDate", e.target.value)
-                  }
-                />
-              </td>
-              <td style={tdStyle}>
-                {isMounted && (
-                  <Select
-                    options={exerciseOptions}
-                    value={exerciseOptions.find(
-                      (option) => option.value === row.exerciseId
-                    )}
-                    onChange={(selectedOption) =>
-                      handleExerciseSelect(userId, selectedOption, index)
-                    }
-                  />
-                )}
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="number"
-                  value={row.exerciseTime || ""}
-                  disabled={row.disableFields?.exerciseTime}
-                  onChange={(e) =>
-                    handleInputChange(index, "exerciseTime", +e.target.value)
-                  }
-                />
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="number"
-                  value={row.distance || ""}
-                  disabled={row.disableFields?.distance}
-                  onChange={(e) =>
-                    handleInputChange(index, "distance", +e.target.value)
-                  }
-                />
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="number"
-                  value={row.reps || ""}
-                  disabled={row.disableFields?.reps}
-                  onChange={(e) =>
-                    handleInputChange(index, "reps", +e.target.value)
-                  }
-                />
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="number"
-                  value={row.weight || ""}
-                  disabled={row.disableFields?.weight}
-                  onChange={(e) =>
-                    handleInputChange(index, "weight", +e.target.value)
-                  }
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <button className={styles.button} type="button" onClick={addExercise}>
-        Add Row
-      </button>
-      <button className={styles.button} type="button" onClick={addExercise}>
-        Submit
-      </button>
     </main>
   );
 }
