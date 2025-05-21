@@ -1,8 +1,45 @@
+'use client';
 import React from "react";
 import styles from './create.module.css';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function CreateAccount() {
+  const router = useRouter();
+
+  const userSave = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const email = (document.getElementById('email') as HTMLInputElement).value;
+    const firstName = (document.getElementById('first-name') as HTMLInputElement).value;
+    const lastName = (document.getElementById('last-name') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
+    const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement)
+      .value;
+
+    if (password === confirmPassword) {
+      const res = await fetch('/api/create-account', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, firstName, lastName, password }),
+      });
+  
+      const data = await res.json();
+  
+      if (data.success) {
+        router.push('/');
+      } else {
+        alert('Create account failed: ' + data.error);
+      }
+    }
+    else {
+      alert("Password and confirm password do not match.");
+    }
+    
+  };
+
   return (
     <div className={styles.gridContainer}>
       <div className={styles.title}>
@@ -13,7 +50,7 @@ export default function CreateAccount() {
         <div className={styles.loginHeader}>Create Account</div>
         <div className={styles.body}>
           <div className={styles.FormLogIn}>
-            <form>
+            <form onSubmit={userSave}>
               <div className={styles.inputField}>
                 <div className={styles.label}>First Name</div>
                 <div className={styles.input}>

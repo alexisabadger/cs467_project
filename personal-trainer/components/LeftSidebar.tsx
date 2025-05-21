@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import SurveyCard from './SurveyCard';
-import Link from 'next/link';
+// import Link from 'next/link';
 import styles from '@/components/Dashboard.module.css';
 
 
@@ -31,14 +31,14 @@ export default function LeftSidebar() {
       const res = await fetch(`/api/user-survey-info?userId=${userId}`);
       const data = await res.json();
       if (data.success) {
-        setFitnessLevel(fitnessLevelMap[+data.fitnessLevelId] || 'Unknown');
+        setFitnessLevel(fitnessLevelMap[data.fitnessLevelId] || 'Unknown');
       }
     };
     fetchFitnessInfo();
   }, [userId]);
   
   return (
-    <aside style={{  }}>
+    <aside className={`${styles.card} ${styles.leftSidebar}`}>
       <h2>Fitness Survey</h2>
       <br />
       <ul>
