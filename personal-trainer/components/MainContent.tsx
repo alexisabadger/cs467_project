@@ -83,9 +83,147 @@ export default function MainContent() {
       ) : (
         <p>No exercises found</p>
       )}
+<<<<<<< Updated upstream
       <button className={styles.button}>
         <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
       </button>
+=======
+
+      {/* Workout Tracker Section */}
+      <h1 className={styles.cardTitle} style={{ marginTop: '2rem' }}>Workout Tracker</h1>
+      <div className={styles.tableContainer}>
+        <table className={styles.responsiveTable}>
+          <thead>
+            <tr>
+              <th style={responsiveThStyle}>Actions</th>
+              <th style={responsiveThStyle}>Date</th>
+              <th style={responsiveThStyle}>Exercise</th>
+              <th style={responsiveThStyle}>Time</th>
+              <th style={responsiveThStyle}>Distance</th>
+              <th style={responsiveThStyle}>Reps</th>
+              <th style={responsiveThStyle}>Weight</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={index}>
+                <td style={responsiveTdStyle} data-label="Actions">
+                  <div className={styles.actionButtons}>
+                    <button
+                      className={styles.button}
+                      type="button"
+                      onClick={() => removeExercise(index)}
+                    >
+                      Remove
+                    </button>
+                    <button
+                      className={styles.button}
+                      type="button"
+                      onClick={() => copyExercise(index)}
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </td>
+                <td style={responsiveTdStyle} data-label="Date">
+                  <input
+                    type="date"
+                    value={row.exerciseDate}
+                    onChange={(e) =>
+                      handleInputChange(index, "exerciseDate", e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+                <td style={responsiveTdStyle} data-label="Exercise">
+                  {isMounted && (
+                    <Select
+                      options={exerciseOptions}
+                      value={exerciseOptions.find(
+                        (option) => option.value === row.exerciseId
+                      )}
+                      onChange={(selectedOption) =>
+                        handleExerciseSelect(userId, selectedOption, index)
+                      }
+                      classNamePrefix="react-select"
+                      styles={{
+                       container: (base) => ({
+                        ...base,
+                        minWidth: '200px', 
+                        width: '100%',  
+                      }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '40px',
+                          fontSize: '14px',
+                      }),
+                        menu: (base) => ({
+                          ...base,
+                          zIndex: 9999, 
+                        })
+                      }}
+                    />
+                  )}
+                </td>
+                <td style={responsiveTdStyle} data-label="Time (min)">
+                  <input
+                    type="number"
+                    value={row.exerciseTime || ""}
+                    disabled={row.disableFields?.exerciseTime}
+                    onChange={(e) =>
+                      handleInputChange(index, "exerciseTime", +e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+                <td style={responsiveTdStyle} data-label="Distance (mi)">
+                  <input
+                    type="number"
+                    value={row.distance || ""}
+                    disabled={row.disableFields?.distance}
+                    onChange={(e) =>
+                      handleInputChange(index, "distance", +e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+                <td style={responsiveTdStyle} data-label="Reps">
+                  <input
+                    type="number"
+                    value={row.reps || ""}
+                    disabled={row.disableFields?.reps}
+                    onChange={(e) =>
+                      handleInputChange(index, "reps", +e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+                <td style={responsiveTdStyle} data-label="Weight (lbs)">
+                  <input
+                    type="number"
+                    value={row.weight || ""}
+                    disabled={row.disableFields?.weight}
+                    onChange={(e) =>
+                      handleInputChange(index, "weight", +e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className={styles.actionButtons}>
+        <button className={styles.button} type="button" onClick={addExercise}>
+          Add Row
+        </button>
+        <button className={styles.button} type="button" onClick={addExercise}>
+          Submit
+        </button>
+      </div>
+>>>>>>> Stashed changes
     </main>
   );
 }
