@@ -38,7 +38,7 @@ export default function LeftSidebar() {
   }, [userId]);
   
   return (
-    <aside style={{  }}>
+    <aside className={`${styles.card} ${styles.leftSidebar}`}>
       <h2>Fitness Survey</h2>
       <br />
       <ul>

@@ -3,6 +3,23 @@ import React, { useEffect, useState, CSSProperties } from "react";
 import Select from "react-select";
 import styles from "@/components/Dashboard.module.css";
 
+const responsiveTableStyle: CSSProperties = {
+  width: '100%',
+  borderCollapse: 'collapse',
+};
+
+const responsiveThStyle: CSSProperties = {
+  padding: '12px',
+  border: '1px solid #ddd',
+  backgroundColor: '#f0f0f0',
+  textAlign: 'left',
+};
+
+const responsiveTdStyle: CSSProperties = {
+  padding: '12px',
+  border: '1px solid #ddd',
+};
+
 interface UserExercises {
   ExerciseId: number;
   ExerciseName: string;
@@ -37,6 +54,7 @@ interface Option {
   value: number;
   label: string;
 }
+
 
 export default function MainContent() {
   const [userExercises, setUserExercises] = useState<UserExercises[]>([]);
@@ -209,147 +227,171 @@ export default function MainContent() {
   };
 
   return (
-    <main style={{}}>
+    <main className={`${styles.card} ${styles.mainContent}`}>
+      {/* Workout Plan Section */}
       <h1>Workout Plan</h1>
       {userExercises.length > 0 ? (
-        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        <div className={styles.tableContainer}>
+          <table className={styles.exerciseTable}>
+            <thead>
+              <tr>
+                <th style={responsiveThStyle}>Exercise</th>
+                <th style={responsiveThStyle}>Description</th>
+                <th style={responsiveThStyle}>Equipment</th>
+                <th style={responsiveThStyle}>Level</th>
+                <th style={responsiveThStyle}>Time</th>
+                <th style={responsiveThStyle}>Distance</th>
+                <th style={responsiveThStyle}>Sets</th>
+                <th style={responsiveThStyle}>Reps</th>
+                <th style={responsiveThStyle}>Weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userExercises.map((exercise, index) => (
+                <tr key={index}>
+                  <td style={responsiveTdStyle} data-label="Exercise">{exercise.ExerciseName}</td>
+                  <td style={responsiveTdStyle} data-label="Description">{exercise.ExerciseDescription}</td>
+                  <td style={responsiveTdStyle} data-label="Equipment">{exercise.ExerciseEquipmentName}</td>
+                  <td style={responsiveTdStyle} data-label="Level">{exercise.FitnessLevel}</td>
+                  <td style={responsiveTdStyle} data-label="Time (min)">{exercise.ExerciseTime}</td>
+                  <td style={responsiveTdStyle} data-label="Distance (mi)">{exercise.Distance}</td>
+                  <td style={responsiveTdStyle} data-label="Sets">{exercise.Sets}</td>
+                  <td style={responsiveTdStyle} data-label="Reps">{exercise.Reps}</td>
+                  <td style={responsiveTdStyle} data-label="Weight (lbs)">{exercise.Weight}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p>No exercises found</p>
+      )}
+
+      {/* Workout Tracker Section */}
+      <h1 className={styles.cardTitle} style={{ marginTop: '2rem' }}>Workout Tracker</h1>
+      <div className={styles.tableContainer}>
+        <table className={styles.responsiveTable}>
           <thead>
             <tr>
-              <th style={thStyle}>Exercise Name</th>
-              <th style={thStyle}>Exercise Description</th>
-              <th style={thStyle}>Equipment</th>
-              <th style={thStyle}>Fitness Level</th>
-              <th style={thStyle}>Exercise Time (min.)</th>
-              <th style={thStyle}>Distance (mi.)</th>
-              <th style={thStyle}>Sets</th>
-              <th style={thStyle}>Reps</th>
-              <th style={thStyle}>Weight (lbs.)</th>
+              <th style={responsiveThStyle}>Actions</th>
+              <th style={responsiveThStyle}>Date</th>
+              <th style={responsiveThStyle}>Exercise</th>
+              <th style={responsiveThStyle}>Time</th>
+              <th style={responsiveThStyle}>Distance</th>
+              <th style={responsiveThStyle}>Reps</th>
+              <th style={responsiveThStyle}>Weight</th>
             </tr>
           </thead>
           <tbody>
-            {userExercises.map((exercise, index) => (
+            {rows.map((row, index) => (
               <tr key={index}>
-                <td style={tdStyle}>{exercise.ExerciseName}</td>
-                <td style={tdStyle}>{exercise.ExerciseDescription}</td>
-                <td style={tdStyle}>{exercise.ExerciseEquipmentName}</td>
-                <td style={tdStyle}>{exercise.FitnessLevel}</td>
-                <td style={tdStyle}>{exercise.ExerciseTime}</td>
-                <td style={tdStyle}>{exercise.Distance}</td>
-                <td style={tdStyle}>{exercise.Sets}</td>
-                <td style={tdStyle}>{exercise.Reps}</td>
-                <td style={tdStyle}>{exercise.Weight}</td>
+                <td style={responsiveTdStyle} data-label="Actions">
+                  <div className={styles.actionButtons}>
+                    <button
+                      className={styles.button}
+                      type="button"
+                      onClick={() => removeExercise(index)}
+                    >
+                      Remove
+                    </button>
+                    <button
+                      className={styles.button}
+                      type="button"
+                      onClick={() => copyExercise(index)}
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </td>
+                <td style={responsiveTdStyle} data-label="Date">
+                  <input
+                    type="date"
+                    value={row.exerciseDate}
+                    onChange={(e) =>
+                      handleInputChange(index, "exerciseDate", e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+                <td style={responsiveTdStyle} data-label="Exercise">
+                  {isMounted && (
+                    <Select
+                      options={exerciseOptions}
+                      value={exerciseOptions.find(
+                        (option) => option.value === row.exerciseId
+                      )}
+                      onChange={(selectedOption) =>
+                        handleExerciseSelect(userId, selectedOption, index)
+                      }
+                      classNamePrefix="react-select"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '40px',
+                          fontSize: '14px'
+                        })
+                      }}
+                    />
+                  )}
+                </td>
+                <td style={responsiveTdStyle} data-label="Time (min)">
+                  <input
+                    type="number"
+                    value={row.exerciseTime || ""}
+                    disabled={row.disableFields?.exerciseTime}
+                    onChange={(e) =>
+                      handleInputChange(index, "exerciseTime", +e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+                <td style={responsiveTdStyle} data-label="Distance (mi)">
+                  <input
+                    type="number"
+                    value={row.distance || ""}
+                    disabled={row.disableFields?.distance}
+                    onChange={(e) =>
+                      handleInputChange(index, "distance", +e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+                <td style={responsiveTdStyle} data-label="Reps">
+                  <input
+                    type="number"
+                    value={row.reps || ""}
+                    disabled={row.disableFields?.reps}
+                    onChange={(e) =>
+                      handleInputChange(index, "reps", +e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
+                <td style={responsiveTdStyle} data-label="Weight (lbs)">
+                  <input
+                    type="number"
+                    value={row.weight || ""}
+                    disabled={row.disableFields?.weight}
+                    onChange={(e) =>
+                      handleInputChange(index, "weight", +e.target.value)
+                    }
+                    className={styles.inputField}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-      ) : (
-        <p>No exercises found</p>
-      )}
-      <br />
-      <h1>Workout Tracker</h1>
-      <table style={{ borderCollapse: "collapse", width: "100%" }}>
-        <thead>
-          <tr>
-            <th style={thStyle}>Actions</th>
-            <th style={thStyle}>Exercise Date</th>
-            <th style={thStyle}>Exercise Name</th>
-            <th style={thStyle}>Exercise Time (min.)</th>
-            <th style={thStyle}>Distance (mi.)</th>
-            <th style={thStyle}>Reps</th>
-            <th style={thStyle}>Weight (lbs.)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, index) => (
-            <tr key={index}>
-              <td style={tdStyle}>
-                <button
-                  className={styles.button}
-                  type="button"
-                  onClick={() => removeExercise(index)}
-                >
-                  Remove
-                </button>
-                <button
-                  className={styles.button}
-                  type="button"
-                  onClick={() => copyExercise(index)}
-                >
-                  Copy
-                </button>
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="date"
-                  value={row.exerciseDate}
-                  onChange={(e) =>
-                    handleInputChange(index, "exerciseDate", e.target.value)
-                  }
-                />
-              </td>
-              <td style={tdStyle}>
-                {isMounted && (
-                  <Select
-                    options={exerciseOptions}
-                    value={exerciseOptions.find(
-                      (option) => option.value === row.exerciseId
-                    )}
-                    onChange={(selectedOption) =>
-                      handleExerciseSelect(userId, selectedOption, index)
-                    }
-                  />
-                )}
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="number"
-                  value={row.exerciseTime || ""}
-                  disabled={row.disableFields?.exerciseTime}
-                  onChange={(e) =>
-                    handleInputChange(index, "exerciseTime", +e.target.value)
-                  }
-                />
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="number"
-                  value={row.distance || ""}
-                  disabled={row.disableFields?.distance}
-                  onChange={(e) =>
-                    handleInputChange(index, "distance", +e.target.value)
-                  }
-                />
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="number"
-                  value={row.reps || ""}
-                  disabled={row.disableFields?.reps}
-                  onChange={(e) =>
-                    handleInputChange(index, "reps", +e.target.value)
-                  }
-                />
-              </td>
-              <td style={tdStyle}>
-                <input
-                  type="number"
-                  value={row.weight || ""}
-                  disabled={row.disableFields?.weight}
-                  onChange={(e) =>
-                    handleInputChange(index, "weight", +e.target.value)
-                  }
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <button className={styles.button} type="button" onClick={addExercise}>
-        Add Row
-      </button>
-      <button className={styles.button} type="button" onClick={addExercise}>
-        Submit
-      </button>
+      </div>
+
+      <div className={styles.actionButtons}>
+        <button className={styles.button} type="button" onClick={addExercise}>
+          Add Row
+        </button>
+        <button className={styles.button} type="button" onClick={addExercise}>
+          Submit
+        </button>
+      </div>
     </main>
   );
 }

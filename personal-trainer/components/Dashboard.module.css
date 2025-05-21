@@ -1,86 +1,169 @@
+/* Dashboard.module.css */
+
 .dashboardContainer {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  width: 100%;
+  background-color: #5b9bd5;
+  font-family: "JejuGothic-Regular", Helvetica, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1rem;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.headerLeft {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: left;
+}
+
+.headerRight {
+  font-size: 1rem;
+  font-weight: normal;
+  text-align: right;
+}
+
+.contentGrid {
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background-color: #5b9bd5;
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid #bdd7ee;
+  border-radius: 8px;
+  padding: 1rem;
+  height: 100%;
+  overflow-y: auto;
+  color: #000000;
+}
+
+/* Table styles with class selector */
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #bdd7ee;
+}
+
+.tableHeader {
+  border: 1px solid #bdd7ee;
+  padding: 8px;
+  background-color: #f0f0f0;
+  text-align: left;
+}
+
+.tableCell {
+  border: 1px solid #bdd7ee;
+  padding: 8px;
+}
+
+.button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Mobile-specific fixes to prevent overflow */
+@media screen and (max-width: 768px) {
+  .dashboardContainer {
+    width: 100vw;
+    overflow-x: hidden;
+    grid-template-rows: auto auto;
+  }
+
+  .contentGrid {
     width: 100%;
-    background-color: #5b9bd5;
-    font-family: "JejuGothic-Regular", Helvetica, sans-serif;
+    min-width: 0;
+    grid-template-columns: 100%;
+    padding: 0.5rem;
   }
-  
+
+  .card {
+    width: calc(100% - 2rem);
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;            
-    padding: 1rem 1rem;
-    gap: 35rem;      /* having trouble right justifying the right header*/
-    background-color: #ffffff;
-    color: #000000;
+    padding: 0.5rem;
+    flex-wrap: wrap;
   }
-  
-  .headerLeft {
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: left;
+
+  .headerLeft h1 {
+    font-size: 1.2rem;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .headerRight {
-    font-size: 1rem;
-    font-weight: normal;
-    text-align: right;
-  }
-  
-
-  .contentGrid {
-    grid-row: 2;
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    gap: 1rem;
-    padding: 1rem 2rem;
-    background-color: #5b9bd5;
-  }
-  
-  .card {
-    background-color: #ffffff;
-    border: 1px solid #bdd7ee;
-    border-radius: 8px;
-    padding: 1rem;
-    height: 100%;
-    overflow-y: auto;
-    color: #000000; 
-  }
-
-  .exerciseTable {
-    border-collapse: collapse;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     width: 100%;
-    border: 1px solid #bdd7ee;
-  }
-
-  .th {
-    border: 1px solid #bdd7ee;
-    padding: 8px;
-    background-color: #f0f0f0;
-    text-align: left;
-  }
-
-  .td {
-    border: 1px solid #bdd7ee;
-    padding: 8px;
-  }
-
-  .leftSidebar,
-  .mainContent,
-  .rightSidebar {
-    font-family: var(--single-line-body-base-font-family);
-    font-size: var(--single-line-body-base-font-size);
-    color: #000000; 
   }
 
   .button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: #0070f3;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
   }
+
+  .tableContainer {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -0.5rem;
+    padding: 0 0.5rem;
+  }
+
+  /* Updated to use class selector */
+  .table {
+    min-width: 100%;
+    width: auto;
+  }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 480px) {
+  .headerLeft h1 {
+    font-size: 1rem;
+  }
+
+  .leftSidebar button {
+    width: 100%;
+  }
+
+  .rightSidebar ul {
+    padding-left: 1rem;
+    margin: 0;
+  }
+}
+
+/* Mobile button group */
+.mobileButtonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+@media screen and (min-width: 769px) {
+  .mobileButtonGroup {
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
