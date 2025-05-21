@@ -167,3 +167,18 @@
     gap: 1rem;
   }
 }
+
+.inputField {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  background-color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputField:disabled {
+  background-color: #e0e0e0;
+  color: #777;
+  opacity: 0.8;
+}
