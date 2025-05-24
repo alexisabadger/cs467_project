@@ -69,13 +69,16 @@
 }
 
 .button {
+  font-size: 14pxx;
+  min-width: 80px;
   margin-top: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   background-color: #0070f3;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  text-align: center;
 }
 
 /* Mobile-specific fixes to prevent overflow */
