@@ -250,7 +250,7 @@ const createUserExercise = async (exercise: ExerciseTracker) => {
         userId,
         exerciseId: exercise.exerciseId,
         exerciseDate: exercise.exerciseDate,
-        startTime: new Date(exercise.startTime).toISOString(),
+        startTime: exercise.startTime !== null ? new Date(exercise.startTime).toISOString() : null,
         stopTime: new Date().toISOString(),
         distance: exercise.distance,
         reps: exercise.reps,
