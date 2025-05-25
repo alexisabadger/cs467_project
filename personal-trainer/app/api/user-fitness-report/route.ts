@@ -13,10 +13,13 @@ export async function GET(req: Request) {
         { status: 400 }
       );
     }
-    
-    const [resultSets]: any = await db.query("CALL UserExercise_GetHistory(?, ?, ?, ?, ?)", [userIdParam, null, exerciseDateParam, exerciseDateParam, userIdParam]);
+
+    const [resultSets]: any = await db.query(
+      "CALL UserExercise_GetHistory(?, ?, ?, ?, ?)",
+      [userIdParam, null, exerciseDateParam, exerciseDateParam, userIdParam]
+    );
     const rows = resultSets[0];
-    
+
     return NextResponse.json({ success: true, rows }, { status: 200 });
   } catch (error: any) {
     console.error("Error:", error);

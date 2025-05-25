@@ -729,7 +729,7 @@ BEGIN
             AND (_StartDate IS NULL OR ue.ExerciseDate >= _StartDate)
             AND (_EndDate IS NULL OR ue.ExerciseDate <= _EndDate)
         ORDER BY 
-            ue.ExerciseDate DESC, ue.UserExerciseId ASC;
+            ue.ExerciseDate ASC, ue.UserExerciseId ASC;
     ELSE
         -- Unauthorized: return empty result
         SELECT 
