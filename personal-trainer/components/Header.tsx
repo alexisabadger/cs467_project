@@ -42,9 +42,6 @@ const Header: React.FC = () => {
           <Link href='/pages/modify-fitness-plan'>Modify Fitness Plan</Link>
         </button>
         <button className={styles.button}>
-          <Link href='/pages/modify-fitness-plan'>Fitness Report</Link>
-        </button>
-        <button className={styles.button}>
           <Link href='/'>Log Out</Link>
         </button>
       </div>

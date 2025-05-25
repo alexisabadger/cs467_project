@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import SurveyCard from './SurveyCard';
-// import Link from 'next/link';
+import Link from 'next/link';
 import styles from '@/components/Dashboard.module.css';
 
 interface ExerciseLog {
@@ -94,6 +94,9 @@ export default function LeftSidebar() {
       <br />
       <br />
       <h2>Completed Workouts</h2>
+      <button className={styles.button}>
+        <Link href='/pages/modify-fitness-plan'>Fitness Report</Link>
+      </button>
       <br />
       {loading ? (
         <p>Loading...</p>

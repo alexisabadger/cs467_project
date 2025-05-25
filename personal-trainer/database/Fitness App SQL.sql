@@ -377,8 +377,7 @@ CREATE TABLE `UserExercises` (
   `UserId` int(11) NOT NULL,
   `ExerciseId` int(11) NOT NULL,
   `ExerciseDate` datetime DEFAULT NULL,
-  `ExerciseStartTime` datetime DEFAULT NULL,
-  `ExerciseStopTime` datetime DEFAULT NULL,
+  `ExerciseTime` decimal(10,2) DEFAULT NULL,
   `Distance` decimal(10,2) DEFAULT NULL,
   `Reps` int(11) DEFAULT NULL,
   `Weight` decimal(10,2) DEFAULT NULL,
@@ -397,15 +396,15 @@ CREATE TABLE `UserExercises` (
 LOCK TABLES `UserExercises` WRITE;
 /*!40000 ALTER TABLE `UserExercises` DISABLE KEYS */;
 INSERT INTO `UserExercises` VALUES 
-  (1,2,1,DATE_SUB(NOW(), INTERVAL 3 DAY),DATE_SUB(NOW(), INTERVAL 3 DAY) + INTERVAL 18 HOUR,DATE_SUB(NOW(), INTERVAL 3 DAY) + INTERVAL 18 HOUR + INTERVAL 5 MINUTE,NULL,12,NULL),
-  (2,2,1,DATE_SUB(NOW(), INTERVAL 3 DAY),DATE_SUB(NOW(), INTERVAL 3 DAY) + INTERVAL 18 HOUR + INTERVAL 10 MINUTE,DATE_SUB(NOW(), INTERVAL 3 DAY) + INTERVAL 18 HOUR + INTERVAL 20 MINUTE,NULL,10,25.00),
-  (3,2,1,DATE_SUB(NOW(), INTERVAL 3 DAY),DATE_SUB(NOW(), INTERVAL 3 DAY) + INTERVAL 18 HOUR + INTERVAL 25 MINUTE,DATE_SUB(NOW(), INTERVAL 3 DAY) + INTERVAL 18 HOUR + INTERVAL 35 MINUTE,NULL,12,30.00),
-  (4,2,2,DATE_SUB(NOW(), INTERVAL 1 DAY),DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL 18 HOUR,DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL 18 HOUR + INTERVAL 5 MINUTE,NULL,15,NULL),
-  (5,2,2,DATE_SUB(NOW(), INTERVAL 1 DAY),DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL 18 HOUR + INTERVAL 10 MINUTE,DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL 18 HOUR + INTERVAL 20 MINUTE,NULL,12,27.50),
-  (6,2,2,DATE_SUB(NOW(), INTERVAL 1 DAY),DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL 18 HOUR + INTERVAL 25 MINUTE,DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL 18 HOUR + INTERVAL 35 MINUTE,NULL,12,32.50),
-  (7,3,3,DATE_SUB(NOW(), INTERVAL 2 DAY),DATE_SUB(NOW(), INTERVAL 2 DAY) + INTERVAL 17 HOUR,DATE_SUB(NOW(), INTERVAL 2 DAY) + INTERVAL 17 HOUR + INTERVAL 5 MINUTE,NULL,8,NULL),
-  (8,3,3,DATE_SUB(NOW(), INTERVAL 2 DAY),DATE_SUB(NOW(), INTERVAL 2 DAY) + INTERVAL 17 HOUR + INTERVAL 10 MINUTE,DATE_SUB(NOW(), INTERVAL 2 DAY) + INTERVAL 17 HOUR + INTERVAL 15 MINUTE,NULL,10,NULL),
-  (9,3,3,DATE_SUB(NOW(), INTERVAL 2 DAY),DATE_SUB(NOW(), INTERVAL 2 DAY) + INTERVAL 17 HOUR + INTERVAL 20 MINUTE,DATE_SUB(NOW(), INTERVAL 2 DAY) + INTERVAL 17 HOUR + INTERVAL 21 MINUTE,NULL,30,NULL);
+  (1,2,1,DATE_SUB(NOW(), INTERVAL 3 DAY),NULL,NULL,12,NULL),
+  (2,2,1,DATE_SUB(NOW(), INTERVAL 3 DAY),NULL,NULL,10,25.00),
+  (3,2,1,DATE_SUB(NOW(), INTERVAL 3 DAY),NULL,NULL,12,30.00),
+  (4,2,2,DATE_SUB(NOW(), INTERVAL 1 DAY),NULL,NULL,15,NULL),
+  (5,2,2,DATE_SUB(NOW(), INTERVAL 1 DAY),NULL,NULL,12,27.50),
+  (6,2,2,DATE_SUB(NOW(), INTERVAL 1 DAY),NULL,NULL,12,32.50),
+  (7,3,3,DATE_SUB(NOW(), INTERVAL 2 DAY),NULL,NULL,8,NULL),
+  (8,3,3,DATE_SUB(NOW(), INTERVAL 2 DAY),NULL,NULL,10,NULL),
+  (9,3,3,DATE_SUB(NOW(), INTERVAL 2 DAY),NULL,NULL,30,NULL);
 /*!40000 ALTER TABLE `UserExercises` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -645,8 +644,7 @@ CREATE PROCEDURE `UserExercise_Save`(
     _UserId INT,
     _ExerciseId INT,
     _ExerciseDate DATETIME,
-    _ExerciseStartTime DATETIME,
-    _ExerciseStopTime DATETIME,
+    _ExerciseTime DECIMAL(10,2),
     _Distance DECIMAL(10,2),
     _Reps INT,
     _Weight DECIMAL(10,2),
@@ -665,8 +663,7 @@ BEGIN
         IF (_UserExerciseId > 0) THEN
             UPDATE UserExercises
             SET ExerciseDate = _ExerciseDate,
-                ExerciseStartTime = _ExerciseStartTime,
-                ExerciseStopTime = _ExerciseStopTime,
+                ExerciseTime = _ExerciseTime,
                 Distance = _Distance,
                 Reps = _Reps,
                 Weight = _Weight
@@ -678,12 +675,12 @@ BEGIN
             -- Insert new user exercise
             INSERT INTO UserExercises (
                 UserId, ExerciseId,
-                ExerciseDate, ExerciseStartTime, ExerciseStopTime,
+                ExerciseDate, ExerciseTime,
                 Distance, Reps, Weight
             )
             VALUES (
                 _UserId, _ExerciseId,
-                _ExerciseDate, _ExerciseStartTime, _ExerciseStopTime,
+                _ExerciseDate, _ExerciseTime,
                 _Distance, _Reps, _Weight
             );
             
