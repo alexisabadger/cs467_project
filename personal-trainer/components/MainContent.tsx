@@ -47,7 +47,7 @@ interface ExerciseTracker {
     reps: boolean;
     weight: boolean;
   }
-  status: 'start' | 'stop' | 'complete';
+  status: string;
   startTime: number | null;
   elapsedSeconds: number;
 }
@@ -79,10 +79,10 @@ export default function MainContent() {
       reps: null,
       weight: null,
       disableFields: {
-        exerciseTime: false,
-        distance: false,
-        reps: false,
-        weight: false,
+        exerciseTime: true,
+        distance: true,
+        reps: true,
+        weight: true,
       },
       status: 'start',
       startTime: null,
@@ -103,10 +103,10 @@ export default function MainContent() {
         reps: null,
         weight: null,
         disableFields: {
-          exerciseTime: false,
-          distance: false,
-          reps: false,
-          weight: false,
+          exerciseTime: true,
+          distance: true,
+          reps: true,
+          weight: true,
         },
         status: 'start',
         startTime: null,
@@ -198,8 +198,6 @@ export default function MainContent() {
       );
       const data = await res.json();
 
-      const rowData = data.rows?.[0];
-
       setRows((prevRows) =>
         prevRows.map((row, i) =>
           i === index
@@ -207,16 +205,19 @@ export default function MainContent() {
                 ...row,
                 exerciseId: selectedExerciseId,
                 exerciseName: selectedOption?.label,
-                exerciseTime: data.rows.ExerciseTime ?? null,
-                distance: data.rows.Distance ?? null,
-                reps: data.rows.Reps ?? null,
-                weight: data.rows.Weight ?? null,
+                exerciseTime: data.rows[0].ExerciseTime ?? null,
+                distance: data.rows[0].Distance ?? null,
+                reps: data.rows[0].Reps ?? null,
+                weight: data.rows[0].Weight ?? null,
                 disableFields: {
-                  exerciseTime: data.rows.ExerciseTime === null || data.rows.ExerciseTime === 0,
-                  distance: data.rows.Distance === null || data.rows.Distance === 0,
-                  reps: data.rows.Reps === null || data.rows.Reps === 0,
-                  weight: data.rows.Weight === null || data.rows.Weight == 0,
+                  exerciseTime: data.rows[0].ExerciseTime === null || data.rows[0].ExerciseTime === 0,
+                  distance: data.rows[0].Distance === null || data.rows[0].Distance === 0,
+                  reps: data.rows[0].Reps === null || data.rows[0].Reps === 0,
+                  weight: data.rows[0].Weight === null || data.rows[0].Weight == 0,
                 },
+                status: 'start',
+                startTime: null,
+                elapsedSeconds: 0,
               }
             : row
         )
@@ -225,106 +226,97 @@ export default function MainContent() {
   };
 
 //Add Start-Stop Button
- useEffect(() => {
-    const interval = setInterval(() => {
-      setRows((prevRows) =>
-        prevRows.map((row) => {
-          if (row.status === 'stop' && row.startTime) {
-            const elapsed = Math.floor((Date.now() - row.startTime) / 1000);
-            return { ...row, elapsedSeconds: elapsed };
-          }
-          return row;
-        })
-      );
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-const createUserExercise = async (exercise: ExerciseTracker) => {
-    await fetch('/api/user-exercise', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId,
-        exerciseId: exercise.exerciseId,
-        exerciseDate: exercise.exerciseDate,
-        startTime: exercise.startTime !== null ? new Date(exercise.startTime).toISOString() : null,
-        stopTime: new Date().toISOString(),
-        distance: exercise.distance,
-        reps: exercise.reps,
-        weight: exercise.weight,
-      }),
-    });
-  };
-
-const toggleExerciseState = (exerciseId: number) => {
-  setRows(prevRows => {
-    const index = prevRows.findIndex(r => r.exerciseId === exerciseId);
-    const now = Date.now();
-
-    if (index !== -1) {
-      return prevRows.map((row, i) => {
-        if (i !== index) return row;
-
-        if (row.status === 'start') {
-          // start → stop
-          return { ...row, status: 'stop', startTime: now, elapsedSeconds: 0 };
-        } 
-        if (row.status === 'stop') {
-          // stop → complete
-          const totalTime = Math.floor((now - (row.startTime || now)) / 1000);
-          const completedRow = {
-            ...row,
-            status: 'complete',
-            startTime: null,
-            exerciseTime: totalTime,
-            elapsedSeconds: totalTime,
-          };
-          createUserExercise(completedRow);
-          return completedRow;
+useEffect(() => {
+  const interval = setInterval(() => {
+    setRows((prevRows) =>
+      prevRows.map((row) => {
+        if (row.status === 'stop' && row.startTime) {
+          const elapsed = Math.floor((Date.now() - row.startTime) / 1000);
+          return { ...row, elapsedSeconds: elapsed };
         }
         return row;
+      })
+    );
+  }, 1000);
+  return () => clearInterval(interval);
+}, []);
+
+const createUserExercise = async () => {
+    let removeExerciseIndexes: number[] = [];
+    const promises = rows.map( async (exercise, index) => {
+      const res = await fetch('/api/user-exercise', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+      },
+        body: JSON.stringify({
+          userId,
+          exerciseId: exercise.exerciseId,
+          exerciseDate: exercise.exerciseDate,
+          exerciseTime: exercise.exerciseTime,
+          distance: exercise.distance,
+          reps: exercise.reps,
+          weight: exercise.weight,
+        }),
       });
-    } else {
-      //  create AND start timer immediately
-      const exercise = userExercises.find(ex => ex.ExerciseId === exerciseId);
-      return [
-        ...prevRows,
-        {
-          exerciseId,
-          exerciseDate: today,
-          exerciseName:   exercise?.ExerciseName || '',
-          exerciseTime:   null,
-          distance:       exercise?.Distance ?? null,
-          reps:           exercise?.Reps ?? null,
-          weight:         exercise?.Weight ?? null,
-          disableFields: {
-            exerciseTime: exercise?.ExerciseTime === 0,
-            distance:      exercise?.Distance === 0,
-            reps:          exercise?.Reps === 0,
-            weight:        exercise?.Weight === 0,
-          },
-          status:         'stop',   
-          startTime:      now,
-          elapsedSeconds: 0,
-        },
-      ];
+      const data = await res.json();
+      if (data.success) {
+        removeExerciseIndexes.push(index);
+      }
+    });
+    
+    // Wait for all fetch requests to complete
+    await Promise.all(promises);
+
+    // Remove exercises in reverse order, because as the lowest index is removed,
+    // the next index is shifted down to take its place
+    for (let exerciseIndex of removeExerciseIndexes.reverse()) {
+      removeExercise(exerciseIndex)
     }
+};
+
+const toggleExerciseState = (index: number) => {
+  setRows(prevRows => {
+    const now = Date.now();
+
+    return prevRows.map((row, i) => {
+      if (i !== index) {
+        return row; // leave other rows unchanged
+      }
+      if (row.status === 'start') {
+        // start → stop
+        return { ...row, status: 'stop', startTime: now, elapsedSeconds: 0 };
+      } 
+      if (row.status === 'stop') {
+        // stop → complete
+        const elapsedSeconds = Math.floor((now - (row.startTime || now)) / 1000.0)
+        const totalTime = Math.round((elapsedSeconds / 60.0) * 100) / 100;
+        const completedRow = {
+          ...row,
+          status: 'start',
+          startTime: null,
+          exerciseTime: totalTime,
+          elapsedSeconds: elapsedSeconds,
+        };
+        
+        return completedRow;
+      }
+      return row;
+    });
+    
   });
 };
 
-  const resetExercises = () => {
-    setRows((prevRows) =>
-      prevRows.map((row) => ({
-        ...row,
-        status: 'start',
-        startTime: null,
-        elapsedSeconds: 0,
-        exerciseTime: null
-      }))
-    );
+const resetExercises = () => {
+  setRows((prevRows) =>
+    prevRows.map((row) => ({
+      ...row,
+      status: 'start',
+      startTime: null,
+      elapsedSeconds: 0,
+      exerciseTime: null
+    }))
+  );
 };
 
   return (
@@ -336,58 +328,32 @@ const toggleExerciseState = (exerciseId: number) => {
           <table className={styles.exerciseTable}>
             <thead>
               <tr>
-                <th style={responsiveThStyle}>Start/Stop</th>
-                <th style={responsiveThStyle}>Exercise</th>
-                <th style={responsiveThStyle}>Description</th>
+                <th style={responsiveThStyle}>Exercise Name</th>
+                <th style={responsiveThStyle}>Exercise Description</th>
                 <th style={responsiveThStyle}>Equipment</th>
-                <th style={responsiveThStyle}>Level</th>
-                <th style={responsiveThStyle}>Time</th>
-                <th style={responsiveThStyle}>Distance</th>
+                <th style={responsiveThStyle}>Fitness Level</th>
+                <th style={responsiveThStyle}>Exercise Time (min.)</th>
+                <th style={responsiveThStyle}>Distance (mi.)</th>
                 <th style={responsiveThStyle}>Sets</th>
                 <th style={responsiveThStyle}>Reps</th>
-                <th style={responsiveThStyle}>Weight</th>
+                <th style={responsiveThStyle}>Weight (lbs.)</th>
               </tr>
             </thead>
             <tbody>
-              {userExercises.map((exercise, index) => {
-                const row = rows.find((r) => r.exerciseId === exercise.ExerciseId);
-                return (
-                  <tr key={index}>
-                    <td style={responsiveTdStyle}>
-                      <button
-                        className={styles.button}
-                        onClick={() => toggleExerciseState(exercise.ExerciseId)}
-                        disabled={row?.status === 'complete'}
-                      >
-                      {row?.status === 'stop'
-                      ? 'Stop'
-                      : row?.status === 'complete'
-                      ? 'Complete'
-                      : 'Start'}
-                        </button>
-                  </td>
-                  <td style={responsiveTdStyle} data-label="Exercise">{exercise.ExerciseName}</td>
-                  <td style={responsiveTdStyle} data-label="Description">{exercise.ExerciseDescription}</td>
-                  <td style={responsiveTdStyle} data-label="Equipment">{exercise.ExerciseEquipmentName}</td>
-                  <td style={responsiveTdStyle} data-label="Level">{exercise.FitnessLevel}</td>
-                  <td style={responsiveTdStyle}>{row?.status === 'stop' || row?.status === 'complete' ? `${row.elapsedSeconds}s` : '-'}</td>
-                  <td style={responsiveTdStyle} data-label="Distance (mi)">{exercise.Distance}</td>
-                  <td style={responsiveTdStyle} data-label="Sets">{exercise.Sets}</td>
-                  <td style={responsiveTdStyle} data-label="Reps">{exercise.Reps}</td>
-                  <td style={responsiveTdStyle} data-label="Weight (lbs)">{exercise.Weight}</td>
+              {userExercises.map((exercise, index) => (
+                <tr key={index}>
+                  <td style={responsiveTdStyle}>{exercise.ExerciseName}</td>
+                  <td style={responsiveTdStyle}>{exercise.ExerciseDescription}</td>
+                  <td style={responsiveTdStyle}>{exercise.ExerciseEquipmentName}</td>
+                  <td style={responsiveTdStyle}>{exercise.FitnessLevel}</td>
+                  <td style={responsiveTdStyle}>{exercise.ExerciseTime}</td>
+                  <td style={responsiveTdStyle}>{exercise.Distance}</td>
+                  <td style={responsiveTdStyle}>{exercise.Sets}</td>
+                  <td style={responsiveTdStyle}>{exercise.Reps}</td>
+                  <td style={responsiveTdStyle}>{exercise.Weight}</td>
                 </tr>
-                );
-              })}
+              ))}
             </tbody>
-              <tfoot>
-                <tr>
-                  <td>
-                    <button className={styles.button} onClick={resetExercises}>
-                      Reset
-                    </button>
-                  </td>
-                </tr>
-              </tfoot>
           </table>
         </div>
       ) : (
@@ -403,10 +369,10 @@ const toggleExerciseState = (exerciseId: number) => {
               <th style={responsiveThStyle}>Actions</th>
               <th style={responsiveThStyle}>Date</th>
               <th style={responsiveThStyle}>Exercise</th>
-              <th style={responsiveThStyle}>Time</th>
-              <th style={responsiveThStyle}>Distance</th>
+              <th style={responsiveThStyle}>Time (min.)</th>
+              <th style={responsiveThStyle}>Distance (mi.)</th>
               <th style={responsiveThStyle}>Reps</th>
-              <th style={responsiveThStyle}>Weight</th>
+              <th style={responsiveThStyle}>Weight (lbs.)</th>
             </tr>
           </thead>
           <tbody>
@@ -427,6 +393,18 @@ const toggleExerciseState = (exerciseId: number) => {
                       onClick={() => copyExercise(index)}
                     >
                       Copy
+                    </button>
+                    <button
+                        className={styles.button}
+                        onClick={() => toggleExerciseState(index)}
+                        disabled={row?.status === 'complete'}
+                        hidden={row.disableFields?.exerciseTime}
+                      >
+                        {row?.status === 'stop'
+                        ? 'Stop'
+                        : row?.status === 'complete'
+                        ? 'Complete'
+                        : 'Start'}
                     </button>
                   </div>
                 </td>
@@ -471,6 +449,7 @@ const toggleExerciseState = (exerciseId: number) => {
                   )}
                 </td>
                 <td style={responsiveTdStyle} data-label="Time (min)">
+                  {row.disableFields?.exerciseTime ? "" : row?.status === 'stop' || row?.status === 'complete' ? `${row.elapsedSeconds}s` : '-'}
                   <input
                     type="number"
                     value={row.exerciseTime || ""}
@@ -524,8 +503,11 @@ const toggleExerciseState = (exerciseId: number) => {
         <button className={styles.button} type="button" onClick={addExercise}>
           Add Row
         </button>
-        <button className={styles.button} type="button" onClick={addExercise}>
+        <button className={styles.button} type="button" onClick={createUserExercise}>
           Submit
+        </button>
+        <button className={styles.button} onClick={resetExercises}>
+          Reset
         </button>
       </div>
     </main>

@@ -14,22 +14,10 @@ export async function GET(req: Request) {
       );
     }
     
-    let rows;
-    if (exerciseIdParam) {
-      const [result]: any = await db.query(
-        "SELECT * FROM userexercises WHERE UserId = ? AND ExerciseID = ? ORDER BY ExerciseDate DESC",
-        [userIdParam, exerciseIdParam]
-      );
-      rows = result;
-    } else {
-      const [result]: any = await db.query(
-        "SELECT * FROM userexercises WHERE UserId = ? ORDER BY ExerciseDate DESC",
-        [userIdParam]
-      );
-      rows = result;
-    }
+    const [resultSets]: any = await db.query("CALL User_Exercise_Get(?, ?)", [userIdParam, exerciseIdParam]);
+    const rows = resultSets[0];
 
-    return NextResponse.json({ success: true, rows });
+    return NextResponse.json({ success: true, rows }, { status: 200 });
   } catch (error: any) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -39,12 +27,6 @@ export async function GET(req: Request) {
   }
 }
 
-function formatMySQLDateTime(date: string | Date): string {
-  const d = new Date(date);
-  if (isNaN(d.getTime())) throw new Error('Invalid date');
-  return d.toISOString().slice(0, 19).replace('T', ' ');
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -52,40 +34,20 @@ export async function POST(req: Request) {
       userId,
       exerciseId,
       exerciseDate,
-      startTime,
-      stopTime,
+      exerciseTime,
       distance,
       reps,
       weight
     } = body;
 
-    if (!userId || !exerciseId || !exerciseDate || !startTime || !stopTime) {
+    if (!userId || !exerciseId) {
       return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
     }
 
-    const formattedStart = formatMySQLDateTime(startTime);
-    const formattedStop = formatMySQLDateTime(stopTime);
+    const [resultSets]: any = await db.query("CALL UserExercise_Save(?, ?, ?, ?, ?, ?, ?, ?, ?)", [null, userId, exerciseId, exerciseDate, exerciseTime, distance, reps, weight, userId]);
+    const rows = resultSets[0];
 
-    const query = `
-      INSERT INTO userexercises (
-        UserId, ExerciseID, ExerciseDate, ExerciseStartTime, ExerciseStopTime, Distance, Reps, Weight
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-
-    const values = [
-      userId,
-      exerciseId,
-      exerciseDate,
-      formattedStart,
-      formattedStop,
-      distance || null,
-      reps || null,
-      weight || null
-    ];
-
-    await db.execute(query, values);
-
-    return NextResponse.json({ message: 'Exercise added' }, { status: 200 });
+    return NextResponse.json({ success: true, rows }, { status: 200 });
   } catch (error: any) {
     console.error('Database error:', error);
     return NextResponse.json({ message: 'Internal Error', error: error.message }, { status: 500 });
