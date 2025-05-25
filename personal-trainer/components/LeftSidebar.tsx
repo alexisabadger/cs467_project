@@ -80,10 +80,10 @@ export default function LeftSidebar() {
     if (userId) {
       fetchUserFitnessReport(userId);
 
-      // Use polling to fetch new user exercises every few second
+      // Use polling to fetch new user exercises every few seconds
       const intervalId = setInterval(() => {
         fetchUserFitnessReport(userId);
-      }, 5000); // 10 seconds interval
+      }, 5000);
 
       // Clean up the interval on component unmount
       return () => clearInterval(intervalId);
