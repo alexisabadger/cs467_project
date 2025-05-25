@@ -95,7 +95,7 @@ export default function LeftSidebar() {
       <br />
       <h2>Completed Workouts</h2>
       <button className={styles.button}>
-        <Link href='/pages/modify-fitness-plan'>Fitness Report</Link>
+        <Link href='/pages/user-fitness-report'>Fitness Report</Link>
       </button>
       <br />
       {loading ? (

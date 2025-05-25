@@ -716,8 +716,7 @@ BEGIN
             ue.ExerciseId,
             e.Name AS ExerciseName,
             ue.ExerciseDate,
-            ue.ExerciseStartTime,
-            ue.ExerciseStopTime,
+            ue.ExerciseTime,
             ue.Distance,
             ue.Reps,
             ue.Weight
@@ -730,7 +729,7 @@ BEGIN
             AND (_StartDate IS NULL OR ue.ExerciseDate >= _StartDate)
             AND (_EndDate IS NULL OR ue.ExerciseDate <= _EndDate)
         ORDER BY 
-            ue.ExerciseDate DESC, ue.ExerciseStartTime DESC;
+            ue.ExerciseDate DESC, ue.UserExerciseId ASC;
     ELSE
         -- Unauthorized: return empty result
         SELECT 
