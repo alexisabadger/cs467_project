@@ -14,11 +14,26 @@ export async function GET(req: Request) {
       );
     }
 
-    const [resultSets]: any = await db.query(
-      "CALL UserExercise_GetHistory(?, ?, ?, ?, ?)",
-      [userIdParam, null, exerciseDateParam, exerciseDateParam, userIdParam]
-    );
-    const rows = resultSets[0];
+    let query = `
+      SELECT 
+        ue.UserExerciseId, ue.ExerciseId, e.Name AS ExerciseName,
+        ue.ExerciseDate, ue.ExerciseStartTime, ue.ExerciseStopTime,
+        ue.Distance, ue.Reps, ue.Weight
+      FROM UserExercises ue
+      INNER JOIN Exercises e ON ue.ExerciseId = e.ExerciseId
+      WHERE ue.UserId = ?
+    `;
+    
+    const params = [userIdParam];
+    
+    if (exerciseDateParam) {
+      query += ' AND DATE(ue.ExerciseDate) = ?';
+      params.push(exerciseDateParam);
+    }
+    
+    query += ' ORDER BY ue.ExerciseDate DESC';
+    
+    const [rows] = await db.execute(query, params) as any;
 
     return NextResponse.json({ success: true, rows }, { status: 200 });
   } catch (error: any) {
