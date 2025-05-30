@@ -19,7 +19,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     const fetchUser = async () => {
       if (!userId) return;
-      const res = await fetch(`/api/user/get?userId=${userId}`);
+      const res = await fetch(`/api/user/${userId}/profile`);
       const data = await res.json();
 
       if (data.success) {

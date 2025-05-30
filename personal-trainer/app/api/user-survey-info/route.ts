@@ -1,36 +1,25 @@
-import { db } from '@/lib/databaseConnection';
-import { NextResponse } from 'next/server';
+import { db } from '../../../lib/databaseConnection';
 
-export async function GET(req: Request) {
+export async function GET(request: Request) {
   try {
-    const url = new URL(req.url);
-    const userId = url.searchParams.get("userId");
-
-    if (userId === 'null' || userId === null) {
-      // Return a 400 Bad Request if userId is missing or invalid
-      return NextResponse.json(
-        { success: false, error: 'userId is required' },
-        { status: 400 }
-      );
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+    
+    if (!userId) {
+      return Response.json({ error: 'User ID required' }, { status: 400 });
     }
-
-     const [resultSets]: any = await db.query("CALL User_Get(?, ?, ?)", [userId, null, null]);
-     const rows = resultSets[0];
-
-    if (!rows || rows.length === 0) {
-        return NextResponse.json(
-          { success: false, error: "User not found." },
-          { status: 404 }
-        );
-      }
-      const fitnessLevelId: number = rows[0].FitnessLevelId;
-  
-      return NextResponse.json({ success: true, fitnessLevelId });
-    } catch (error: unknown) {
-      const err = error as Error;
-      return NextResponse.json(
-        { success: false, error: err.message || "server error." },
-        { status: 500 }
-      );
-    }
+    
+    const [rows] = await db.execute(`
+      SELECT 
+        u.UserId, u.FirstName, u.LastName, u.FitnessLevelId,
+        r.FitnessLevel
+      FROM Users u
+      LEFT JOIN RefFitnessLevel r ON u.FitnessLevelId = r.FitnessLevelId
+      WHERE u.UserId = ? AND u.IsDeleted = FALSE
+    `, [userId]) as any;
+    
+    return Response.json({ rows });
+  } catch (error: any) {
+    return Response.json({ error: error.message }, { status: 500 });
   }
+}

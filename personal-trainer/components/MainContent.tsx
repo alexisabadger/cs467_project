@@ -157,25 +157,33 @@ export default function MainContent() {
   }, []);
 
   useEffect(() => {
-    fetch(`/api/user-fitness-plan?userId=${userId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (userId && Array.isArray(data.resultSets)) {
-          setUserExercises(data.resultSets);
+  if (!userId) return; // Don't fetch if no userId
+  
+  fetch(`/api/user/${userId}/fitness-plan`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.resultSets && Array.isArray(data.resultSets)) {
+        setUserExercises(data.resultSets);
 
-          const options = [
-            ...data.resultSets.map((record: UserExercises) => ({
-              value: record.ExerciseId,
-              label: record.ExerciseName,
-            })),
-          ];
-          setExerciseOptions(options);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching exercise data:", error);
-      });
-  }, [userId]);
+        const options = [
+          ...data.resultSets.map((record: UserExercises) => ({
+            value: record.ExerciseId,
+            label: record.ExerciseName,
+          })),
+        ];
+        setExerciseOptions(options);
+      } else {
+        // Handle empty fitness plan
+        setUserExercises([]);
+        setExerciseOptions([]);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching exercise data:", error);
+      setUserExercises([]);
+      setExerciseOptions([]);
+    });
+}, [userId]);
 
   const handleInputChange = (index: number, field: string, value: any) => {
     setRows((prevRows) =>
@@ -185,47 +193,58 @@ export default function MainContent() {
     );
   };
 
-  const handleExerciseSelect = async (
-    userId: string | null,
-    selectedOption: Option | null,
-    index: number
-  ) => {
-    const selectedExerciseId = selectedOption?.value;
+const handleExerciseSelect = async (
+  userId: string | null,
+  selectedOption: Option | null,
+  index: number
+) => {
+  const selectedExerciseId = selectedOption?.value;
 
-    if (selectedExerciseId) {
+  if (selectedExerciseId && userId) {
+    try {
       const res = await fetch(
-        `/api/user-exercise?userId=${userId}&exerciseId=${selectedExerciseId}`
+        `/api/user/${userId}/exercise?exerciseId=${selectedExerciseId}`
       );
       const data = await res.json();
 
-      setRows((prevRows) =>
-        prevRows.map((row, i) =>
-          i === index
-            ? {
-                ...row,
-                exerciseId: selectedExerciseId,
-                exerciseName: selectedOption?.label,
-                exerciseTime: data.rows[0].ExerciseTime ?? null,
-                distance: data.rows[0].Distance ?? null,
-                reps: data.rows[0].Reps ?? null,
-                weight: data.rows[0].Weight ?? null,
-                disableFields: {
-                  exerciseTime: data.rows[0].ExerciseTime === null || data.rows[0].ExerciseTime === 0,
-                  distance: data.rows[0].Distance === null || data.rows[0].Distance === 0,
-                  reps: data.rows[0].Reps === null || data.rows[0].Reps === 0,
-                  weight: data.rows[0].Weight === null || data.rows[0].Weight == 0,
-                },
-                status: 'start',
-                startTime: null,
-                elapsedSeconds: 0,
-              }
-            : row
-        )
-      );
+      // Check if data.rows exists and has content
+      if (data.rows && data.rows.length > 0) {
+        const exerciseData = data.rows[0];
+        
+        setRows((prevRows) =>
+          prevRows.map((row, i) =>
+            i === index
+              ? {
+                  ...row,
+                  exerciseId: selectedExerciseId,
+                  exerciseName: selectedOption?.label,
+                  exerciseTime: exerciseData.ExerciseTime ?? null,
+                  distance: exerciseData.Distance ?? null,
+                  reps: exerciseData.Reps ?? null,
+                  weight: exerciseData.Weight ?? null,
+                  disableFields: {
+                    exerciseTime: exerciseData.ExerciseTime === null || exerciseData.ExerciseTime === 0,
+                    distance: exerciseData.Distance === null || exerciseData.Distance === 0,
+                    reps: exerciseData.Reps === null || exerciseData.Reps === 0,
+                    weight: exerciseData.Weight === null || exerciseData.Weight == 0,
+                  },
+                  status: 'start',
+                  startTime: null,
+                  elapsedSeconds: 0,
+                }
+              : row
+          )
+        );
+      } else {
+        console.error('No exercise data found');
+      }
+    } catch (error) {
+      console.error('Error fetching exercise details:', error);
     }
-  };
+  }
+};
 
-//Add Start-Stop Button
+// Add Start-Stop Button
 useEffect(() => {
   const interval = setInterval(() => {
     setRows((prevRows) =>
@@ -242,7 +261,7 @@ useEffect(() => {
 }, []);
 
 const createUserExercise = async () => {
-    let removeExerciseIndexes: number[] = [];
+    const removeExerciseIndexes: number[] = [];
     const promises = rows.map( async (exercise, index) => {
       const res = await fetch('/api/user-exercise', {
         method: 'POST',
@@ -270,7 +289,7 @@ const createUserExercise = async () => {
 
     // Remove exercises in reverse order, because as the lowest index is removed,
     // the next index is shifted down to take its place
-    for (let exerciseIndex of removeExerciseIndexes.reverse()) {
+    for (const exerciseIndex of removeExerciseIndexes.reverse()) {
       removeExercise(exerciseIndex)
     }
 };

@@ -1,4 +1,4 @@
-import { db } from "../../../lib/databaseConnection";
+import { saveUserExercise, db } from '../../../lib/databaseConnection';
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -7,15 +7,22 @@ export async function GET(req: Request) {
     const userIdParam = url.searchParams.get("userId");
     const exerciseIdParam = url.searchParams.get("exerciseId");
 
-    if (!userIdParam) {
+    if (!userIdParam || !exerciseIdParam) {
       return NextResponse.json(
-        { success: false, error: "Missing userId" },
+        { success: false, error: "Missing userId or exerciseId" },
         { status: 400 }
       );
     }
-    
-    const [resultSets]: any = await db.query("CALL User_Exercise_Get(?, ?)", [userIdParam, exerciseIdParam]);
-    const rows = resultSets[0];
+
+    const [rows] = await db.execute(`
+      SELECT 
+        ufp.UserId, ufp.ExerciseId, e.ExerciseEquipmentId, e.FitnessLevelId,
+        e.Name AS ExerciseName, e.Description AS ExerciseDescription,
+        ufp.ExerciseTime, ufp.Distance, ufp.Sets, ufp.Reps, ufp.Weight
+      FROM UserFitnessPlans ufp
+      INNER JOIN Exercises e ON e.ExerciseId = ufp.ExerciseId
+      WHERE ufp.UserId = ? AND ufp.ExerciseId = ?
+    `, [userIdParam, exerciseIdParam]) as any;
 
     return NextResponse.json({ success: true, rows }, { status: 200 });
   } catch (error: any) {
@@ -44,10 +51,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
     }
 
-    const [resultSets]: any = await db.query("CALL UserExercise_Save(?, ?, ?, ?, ?, ?, ?, ?, ?)", [null, userId, exerciseId, exerciseDate, exerciseTime, distance, reps, weight, userId]);
-    const rows = resultSets[0];
+    const userExerciseId = await saveUserExercise(
+      0, // 0 means insert new
+      parseInt(userId),
+      parseInt(exerciseId),
+      exerciseDate,
+      null, // exerciseStartTime
+      null, // exerciseStopTime
+      distance ? parseFloat(distance) : null,
+      reps ? parseInt(reps) : null,
+      weight ? parseFloat(weight) : null
+    );
 
-    return NextResponse.json({ success: true, rows }, { status: 200 });
+    return NextResponse.json({ success: true, userExerciseId }, { status: 200 });
   } catch (error: any) {
     console.error('Database error:', error);
     return NextResponse.json({ message: 'Internal Error', error: error.message }, { status: 500 });

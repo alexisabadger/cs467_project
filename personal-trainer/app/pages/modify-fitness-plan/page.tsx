@@ -35,27 +35,31 @@ export default function FitnessPlan() {
 
   const fetchUserExercises = async (userId: string) => {
     try {
-      const response = await fetch(`/api/user-fitness-plan?userId=${userId}`);
+      const response = await fetch(`/api/user/${userId}/fitness-plan`);
       const data = await response.json();
-      if (Array.isArray(data.resultSets)) {
+      if (data.resultSets && Array.isArray(data.resultSets)) {
         setUserExercises(data.resultSets);
+      } else {
+        setUserExercises([]);
       }
     } catch (error) {
       console.error('Error fetching exercise data:', error);
+      setUserExercises([]);
     }
   };
 
   const fetchUserExerciseOptions = async (userId: string) => {
     try {
-      const response = await fetch(
-        `/api/user-exercise-options?userId=${userId}`
-      );
+      const response = await fetch(`/api/user-exercise-options?userId=${userId}`);
       const data = await response.json();
-      if (Array.isArray(data.resultSets)) {
-        setUserExerciseOptions(data.resultSets);
+      if (data.rows && Array.isArray(data.rows)) {
+        setUserExerciseOptions(data.rows);
+      } else {
+        setUserExerciseOptions([]);
       }
     } catch (error) {
       console.error('Error fetching exercise options data:', error);
+      setUserExerciseOptions([]);
     }
   };
 
@@ -127,33 +131,35 @@ export default function FitnessPlan() {
   ) => {
     if (!userId) return;
 
-    const updatedData = editableExercises[exerciseId];
-    console.log(updatedData);
-    const res = await fetch('/api/user-exercise-options', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId,
-        exerciseId,
-        exerciseTime,
-        distance,
-        sets,
-        reps,
-        weight,
-      }),
-    });
-
-    if (res.ok) {
-      await fetchUserExercises(userId); // Refresh table
-      setEditableExercises((prev) => {
-        const updated = { ...prev };
-        delete updated[exerciseId];
-        return updated;
+    try {
+      const res = await fetch('/api/user-exercise-options', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          exerciseId,
+          exerciseTime,
+          distance,
+          sets,
+          reps,
+          weight,
+        }),
       });
-    } else {
-      console.error('Failed to update exercise');
+
+      if (res.ok) {
+        await fetchUserExercises(userId); // Refresh table
+        setEditableExercises((prev) => {
+          const updated = { ...prev };
+          delete updated[exerciseId];
+          return updated;
+        });
+      } else {
+        console.error('Failed to update exercise');
+      }
+    } catch (error) {
+      console.error('Error updating exercise:', error);
     }
   };
 

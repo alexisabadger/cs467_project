@@ -13,7 +13,7 @@ export default function Home() {
     const password = (document.getElementById('password') as HTMLInputElement)
       .value;
 
-    const res = await fetch('/api/authenticate', {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -23,9 +23,8 @@ export default function Home() {
 
     const data = await res.json();
 
-    if (data.success) {
-      // Set token here
-      localStorage.setItem('authToken', data.data[0].UserId);
+  if (data.success) {
+      localStorage.setItem('authToken', data.user.UserId);
 
       router.push('/pages/dashboard');
     } else {

@@ -18,7 +18,7 @@ export default function CreateAccount() {
       .value;
 
     if (password === confirmPassword) {
-      const res = await fetch('/api/create-account', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

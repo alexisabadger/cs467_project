@@ -1,89 +1,79 @@
 import { db } from '../../../lib/databaseConnection';
-import { NextResponse } from 'next/server';
 
-export async function GET(req: Request) {
+export async function GET(request: Request) {
   try {
-    const url = new URL(req.url);
-    const userId = url.searchParams.get('userId');
-
-    if (userId === 'null') {
-      // Return a 400 Bad Request if userId is missing or invalid
-      return NextResponse.json(
-        { success: false, error: 'userId is required' },
-        { status: 400 }
-      );
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+    
+    if (!userId) {
+      return Response.json({ error: 'User ID required' }, { status: 400 });
     }
-
-    const [resultSets]: any = await db.query(
-      'CALL UserExerciseOptions_Get(?)',
-      [userId]
-    );
-
-    return new Response(JSON.stringify({ resultSets: resultSets[0] }), {
-      status: 200,
-    });
+    
+    const [rows] = await db.execute(`
+      SELECT 
+        e.ExerciseId, e.Name AS ExerciseName, e.Description AS ExerciseDescription,
+        ee.Name AS ExerciseEquipmentName, l.FitnessLevel,
+        e.ExerciseTime, e.Distance, e.Sets, e.Reps, e.Weight
+      FROM Exercises e
+      INNER JOIN RefExerciseEquipment ee ON e.ExerciseEquipmentId = ee.ExerciseEquipmentId
+      INNER JOIN RefFitnessLevel l ON e.FitnessLevelId = l.FitnessLevelId
+      LEFT JOIN UserFitnessPlans ufp ON ufp.ExerciseId = e.ExerciseId AND ufp.UserId = ?
+      WHERE ufp.ExerciseId IS NULL
+      ORDER BY e.Name
+    `, [userId]) as any;
+    
+    return Response.json({ rows });
   } catch (error: any) {
-    console.error('Error:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { userId, exerciseId } = await req.json();
-
-    await db.query('CALL UserExercise_Add(?, ?)', [userId, exerciseId]);
-
-    return NextResponse.json({ success: true });
+    const { userId, exerciseId } = await request.json();
+    
+    if (!userId || !exerciseId) {
+      return Response.json({ error: 'User ID and Exercise ID required' }, { status: 400 });
+    }
+    
+    // Add exercise to user's plan
+    const [exerciseData] = await db.execute(`
+      SELECT ExerciseTime, Distance, Sets, Reps, Weight 
+      FROM Exercises WHERE ExerciseId = ?
+    `, [exerciseId]) as any;
+    
+    if (exerciseData.length === 0) {
+      return Response.json({ error: 'Exercise not found' }, { status: 404 });
+    }
+    
+    const exercise = exerciseData[0];
+    
+    await db.execute(`
+      INSERT INTO UserFitnessPlans (UserId, ExerciseId, ExerciseTime, Distance, Sets, Reps, Weight)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, [userId, exerciseId, exercise.ExerciseTime, exercise.Distance, exercise.Sets, exercise.Reps, exercise.Weight]);
+    
+    return Response.json({ success: true });
   } catch (error: any) {
-    console.error('Error:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE(request: Request) {
   try {
-    const { userId, exerciseId } = await req.json();
-
-    await db.query('CALL UserExercise_Delete(?, ?)', [userId, exerciseId]);
-
-    return NextResponse.json({ success: true });
+    const { userId, exerciseId } = await request.json();
+    
+    if (!userId || !exerciseId) {
+      return Response.json({ error: 'User ID and Exercise ID required' }, { status: 400 });
+    }
+    
+    await db.execute(`
+      DELETE FROM UserFitnessPlans 
+      WHERE UserId = ? AND ExerciseId = ?
+    `, [userId, exerciseId]);
+    
+    return Response.json({ success: true });
   } catch (error: any) {
-    console.error('Error:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(req: Request) {
-  try {
-    const { userId, exerciseId, exerciseTime, distance, sets, reps, weight } =
-      await req.json();
-
-    await db.query('CALL UserExercise_Update(?, ?, ?, ?, ?, ?, ?)', [
-      userId,
-      exerciseId,
-      exerciseTime,
-      distance,
-      sets,
-      reps,
-      weight,
-    ]);
-
-    return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error('Error:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
