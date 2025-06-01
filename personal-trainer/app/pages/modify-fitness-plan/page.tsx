@@ -35,27 +35,31 @@ export default function FitnessPlan() {
 
   const fetchUserExercises = async (userId: string) => {
     try {
-      const response = await fetch(`/api/user-fitness-plan?userId=${userId}`);
+      const response = await fetch(`/api/user/${userId}/fitness-plan`);
       const data = await response.json();
-      if (Array.isArray(data.resultSets)) {
+      if (data.resultSets && Array.isArray(data.resultSets)) {
         setUserExercises(data.resultSets);
+      } else {
+        setUserExercises([]);
       }
     } catch (error) {
       console.error('Error fetching exercise data:', error);
+      setUserExercises([]);
     }
   };
 
   const fetchUserExerciseOptions = async (userId: string) => {
     try {
-      const response = await fetch(
-        `/api/user-exercise-options?userId=${userId}`
-      );
+      const response = await fetch(`/api/user-exercise-options?userId=${userId}`);
       const data = await response.json();
-      if (Array.isArray(data.resultSets)) {
-        setUserExerciseOptions(data.resultSets);
+      if (data.rows && Array.isArray(data.rows)) {
+        setUserExerciseOptions(data.rows);
+      } else {
+        setUserExerciseOptions([]);
       }
     } catch (error) {
       console.error('Error fetching exercise options data:', error);
+      setUserExerciseOptions([]);
     }
   };
 
@@ -127,33 +131,35 @@ export default function FitnessPlan() {
   ) => {
     if (!userId) return;
 
-    const updatedData = editableExercises[exerciseId];
-    console.log(updatedData);
-    const res = await fetch('/api/user-exercise-options', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId,
-        exerciseId,
-        exerciseTime,
-        distance,
-        sets,
-        reps,
-        weight,
-      }),
-    });
-
-    if (res.ok) {
-      await fetchUserExercises(userId); // Refresh table
-      setEditableExercises((prev) => {
-        const updated = { ...prev };
-        delete updated[exerciseId];
-        return updated;
+    try {
+      const res = await fetch('/api/user-exercise-options', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          exerciseId,
+          exerciseTime,
+          distance,
+          sets,
+          reps,
+          weight,
+        }),
       });
-    } else {
-      console.error('Failed to update exercise');
+
+      if (res.ok) {
+        await fetchUserExercises(userId); // Refresh table
+        setEditableExercises((prev) => {
+          const updated = { ...prev };
+          delete updated[exerciseId];
+          return updated;
+        });
+      } else {
+        console.error('Failed to update exercise');
+      }
+    } catch (error) {
+      console.error('Error updating exercise:', error);
     }
   };
 
@@ -167,26 +173,24 @@ export default function FitnessPlan() {
     const tdStyle: CSSProperties = {
       border: '1px solid #ccc',
       padding: '8px',
-      backgroundColor: '#ffffff',
     };
 
-return (
-  <div style={{ backgroundColor: '#ffffff', padding: '1rem' }}>
-    <button
-      style={{
-        marginTop: '1rem',
-        padding: '0.5rem 1rem',
-        backgroundColor: '#0070f3',
-        color: '#fff',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-      }}
-    >
-      <Link href='/pages/dashboard'>Back</Link>
-    </button>
-
-  <h1 style={{ fontSize: '2rem', fontWeight: 'bold'}}>Current Fitness Plan</h1>
+  return (
+    <>
+      <button
+        style={{
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          backgroundColor: '#0070f3',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
+        <Link href='/pages/dashboard'>Back</Link>
+      </button>
+      <h1>Current Fitness Plan</h1>
       {userExercises.length > 0 ? (
         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead>
@@ -330,9 +334,9 @@ return (
       ) : (
         <p>No exercises found</p>
       )}
-      <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginTop: '100px' }}>Exercise Options</h1> 
+      <h1 style={{ marginTop: '100px' }}>Exercise Options</h1>
       {userExerciseOptions.length > 0 ? (
-        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <table>
           <thead>
             <tr>
               <th style={thStyle}></th>
@@ -382,5 +386,6 @@ return (
       ) : (
         <p>No exercises found</p>
       )}
- </div>);
+    </>
+  );
 }
