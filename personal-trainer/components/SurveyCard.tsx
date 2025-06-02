@@ -1,47 +1,92 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '@/components/Dashboard.module.css';
 
 export default function SurveyCard() {
-  const [fitnessLevel, setFitnessLevel] = useState('');
-  const [fitnessGoals, setFitnessGoals] = useState<string[]>([]);
+  const [fitnessLevel, setFitnessLevel] = useState<number | null>(null);
+  const [fitnessGoals, setFitnessGoals] = useState<number[]>([]);
   const [submitted, setSubmitted] = useState(false);
-  const userId = localStorage.getItem('authToken');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCheckboxChange = (goal: string) => {
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    setUserId(token); // Set userId only if available in localStorage
+  }, []);
+
+  const fitnessLevels = [
+    'Beginner',
+    'Intermediate',
+    'Advanced',
+  ];
+  const fitnessGoalOptions = [
+    'Strength',
+    'Weight-loss',
+    'Flexibility',
+    'Mindfulness',
+  ];
+
+  const handleCheckboxChange = (goalIndex: number) => {
     setFitnessGoals((prevGoals) =>
-      prevGoals.includes(goal)
-        ? prevGoals.filter((g) => g !== goal)
-        : [...prevGoals, goal]
+      prevGoals.includes(goalIndex)
+        ? prevGoals.filter((g) => g !== goalIndex)
+        : [...prevGoals, goalIndex]
     );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!fitnessLevel) {
+    if (fitnessLevel === null) {
       alert('Please select your fitness level.');
+      return;
+    }
+
+    if (!userId) {
+      alert('User ID not found. Please log in again.');
       return;
     }
 
     // console.log("Fitness Level:", fitnessLevel);
     // console.log("Fitness Goals:", fitnessGoals);
-    setSubmitted(true);
+    setIsLoading(true);
 
-    const res = await fetch('/api/user-fitness-goal-exercises', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userId, fitnessLevel, fitnessGoals }),
-    });
+    try {
+      const res = await fetch('/api/user-fitness-goal-exercises', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, 
+                               fitnessLevel, 
+                               fitnessGoals 
+                              }),
+      });
 
-    const data = await res.json();
-    if (data.success) {
-      alert('Created fitness plan.');
-      window.location.reload();
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert('Created fitness plan.');
+        setSubmitted(true);
+        window.location.reload();
+      } else {
+        throw new Error(data.error || 'Failed to create fitness plan');
+      }
+    } catch (error) {
+      console.error('Error creating fitness plan: ', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (userId === null) {
+    return (<div className={styles.card}>Loading...</div>);
+  }
 
   return (
     <div className = {styles.card}>
@@ -52,17 +97,17 @@ export default function SurveyCard() {
             <p>
               <strong>What is your level of fitness? (select one)</strong>
             </p>
-            {['Beginner', 'Intermediate', 'Advanced'].map((level, index) => (
+            {fitnessLevels.map((level, index) => (
               <label
-                key={level}
+                key={index}
                 style={{ display: 'block', marginBottom: '0.25rem' }}
               >
                 <input
                   type='radio'
                   name='fitnessLevel'
                   value={index}
-                  checked={fitnessLevel === String(index)}
-                  onChange={() => setFitnessLevel(String(index))}
+                  checked={fitnessLevel === index}
+                  onChange={() => setFitnessLevel(index)}
                 />{' '}
                 {level}
               </label>
@@ -74,24 +119,29 @@ export default function SurveyCard() {
             <p>
               <strong>What are your fitness goals? (select one or more)</strong>
             </p>
-            {['Strength', 'Weight-loss', 'Flexibility', 'Mindfulness'].map(
-              (goal, index) => (
-                <label
-                  key={goal}
-                  style={{ display: 'block', marginBottom: '0.25rem' }}
-                >
-                  <input
-                    type='checkbox'
-                    value={index}
-                    checked={fitnessGoals.includes(String(index))}
-                    onChange={() => handleCheckboxChange(String(index))}
-                  />{' '}
-                  {goal}
-                </label>
-              ))}
+            {fitnessGoalOptions.map((goal, index) => (
+              <label
+                key={goal}
+                style={{ display: 'block', marginBottom: '0.25rem' }}
+              >
+                <input
+                  type='checkbox'
+                  value={index}
+                  checked={fitnessGoals.includes(index)}
+                  onChange={() => handleCheckboxChange(index)}
+                />{' '}
+                {goal}
+              </label>
+            ))}
             </div>
   
-            <button type="submit" className={styles.button}>Submit</button>
+            <button 
+              type="submit" 
+              className={styles.button}
+              disabled={isLoading}
+              >
+                {isLoading ? 'Submitting...' : 'Submit'}
+            </button>
           </form>
         ) : (
           <div>
