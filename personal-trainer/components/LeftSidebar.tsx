@@ -53,8 +53,14 @@ export default function LeftSidebar() {
       if (!userId) return;
       const res = await fetch(`/api/user-survey-info?userId=${userId}`);
       const data = await res.json();
-      if (data.success) {
-        setFitnessLevel(fitnessLevelMap[data.fitnessLevelId] || "Unknown");
+
+      console.log('API Response:', data);
+
+      if (data.rows && data.rows[0]) {
+        const user = data.rows[0];
+        setFitnessLevel(user.FitnessLevel || "Not set");
+      } else {
+        console.error("No fitness level data found for user:", userId);
       }
     };
     fetchFitnessInfo();
